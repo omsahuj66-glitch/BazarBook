@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — BazaarBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0F1E;--c1:#111827;--c2:#1F2937;--c3:#374151;--acc:#FBBF24;--g:#10B981;--r:#EF4444;--b:#3B82F6;--p:#8B5CF6;--tx:#F9FAFB;--tm:#9CA3AF;--bord:#374151;--rad:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
+
+/* LOGIN */
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 30% 40%,rgba(251,191,36,0.08),transparent 50%),var(--bg);}
+.lcard{background:var(--c1);border:1px solid var(--bord);border-radius:20px;padding:36px 28px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.llogo{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;color:var(--acc);text-align:center;margin-bottom:4px;}
+.lsub{text-align:center;color:var(--tm);font-size:13px;margin-bottom:28px;}
+.inp{width:100%;padding:12px 14px;background:var(--c3);border:1.5px solid var(--bord);border-radius:9px;font-size:15px;color:var(--tx);font-family:'Hind',sans-serif;outline:none;margin-bottom:10px;transition:border-color 0.2s;}
+.inp:focus{border-color:var(--acc);}
+.lbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--acc),#D97706);border:none;border-radius:9px;font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;color:#111;cursor:pointer;margin-top:4px;}
+
+/* LAYOUT */
+#adminApp{display:none;display:flex;min-height:100vh;}
+#adminApp{display:none;}
+.sidebar{width:220px;background:var(--c1);border-right:1px solid var(--bord);position:fixed;top:0;bottom:0;left:0;z-index:100;overflow-y:auto;transition:transform 0.3s;}
+.slogo{padding:18px 16px;border-bottom:1px solid var(--bord);font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:var(--acc);}
+.slogo small{display:block;font-size:11px;color:var(--tm);font-weight:400;font-family:'Hind',sans-serif;}
+.slink{display:flex;align-items:center;gap:10px;padding:12px 16px;color:var(--tm);font-size:14px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all 0.15s;border-left:3px solid transparent;}
+.slink:hover{color:var(--tx);background:rgba(255,255,255,0.04);}
+.slink.on{color:var(--acc);background:rgba(251,191,36,0.08);border-left-color:var(--acc);}
+
+.main{margin-left:220px;flex:1;}
+.topbar{background:var(--c1);border-bottom:1px solid var(--bord);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.pt{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;}
+.lo2{background:rgba(255,255,255,0.06);border:1px solid var(--bord);color:var(--tm);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px;}
+.ham{display:none;background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer;}
+
+.content{padding:20px;}
+.page{display:none;}
+.page.on{display:block;}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.sc{background:var(--c1);border:1px solid var(--bord);border-radius:var(--rad);padding:16px;text-align:center;}
+.sc-ic{font-size:26px;margin-bottom:6px;}
+.sc-n{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;}
+.sc-l{font-size:11px;color:var(--tm);}
+.c-y .sc-n{color:var(--acc);} .c-g .sc-n{color:var(--g);} .c-b .sc-n{color:var(--b);} .c-p .sc-n{color:var(--p);} .c-r .sc-n{color:var(--r);}
+
+/* TABLE */
+.tw{background:var(--c1);border:1px solid var(--bord);border-radius:var(--rad);overflow:hidden;margin-bottom:16px;}
+.th{padding:14px 16px;border-bottom:1px solid var(--bord);display:flex;align-items:center;justify-content:space-between;}
+.tt{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;}
+.ox{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:10px 14px;font-size:11px;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--bord);text-align:left;}
+tbody td{padding:11px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+tbody tr:last-child td{border:none;}
+tbody tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* BADGES */
+.bd{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.bg{background:rgba(16,185,129,0.15);color:var(--g);}
+.br{background:rgba(239,68,68,0.15);color:var(--r);}
+.by{background:rgba(251,191,36,0.15);color:var(--acc);}
+.bb{background:rgba(59,130,246,0.15);color:var(--b);}
+.bm{background:rgba(139,92,246,0.15);color:var(--p);}
+.bgr{background:rgba(156,163,175,0.15);color:var(--tm);}
+
+/* ACTION BUTTONS */
+.ab{padding:5px 10px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.ae{background:rgba(59,130,246,0.15);color:var(--b);}
+.ad{background:rgba(239,68,68,0.15);color:var(--r);}
+.ag{background:rgba(16,185,129,0.15);color:var(--g);}
+.ay{background:rgba(251,191,36,0.15);color:var(--acc);}
+.am{background:rgba(139,92,246,0.15);color:var(--p);}
+.ac-row{display:flex;gap:5px;flex-wrap:wrap;}
+
+/* FORM */
+.fc{background:var(--c1);border:1px solid var(--bord);border-radius:var(--rad);padding:18px;margin-bottom:16px;}
+.fct{font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:var(--acc);margin-bottom:12px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.fg.s{grid-template-columns:1fr;}
+.fl label{display:block;font-size:11px;font-weight:600;color:var(--tm);margin-bottom:5px;text-transform:uppercase;}
+.fl input,.fl select{width:100%;padding:10px 12px;background:var(--c3);border:1.5px solid var(--bord);border-radius:7px;font-family:'Hind',sans-serif;font-size:14px;color:var(--tx);outline:none;transition:border-color 0.2s;}
+.fl input:focus,.fl select:focus{border-color:var(--acc);}
+.fl select option{background:var(--c2);}
+.savbtn{padding:9px 20px;background:linear-gradient(135deg,var(--acc),#D97706);border:none;border-radius:7px;font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:#111;cursor:pointer;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .ham{display:block;}
+  .sg{grid-template-columns:1fr 1fr;}
+  .fg{grid-template-columns:1fr;}
+}
+.mob-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99;}
+.mob-ov.open{display:block;}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--c2);color:var(--tx);padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:all 0.3s;z-index:999;border:1px solid var(--bord);}
+.toast.show{opacity:1;}
+.empty-r{text-align:center;padding:28px;color:var(--tm);}
+
+/* INLINE SUB FORM */
+.sub-form{display:none;background:var(--c2);border:1px solid var(--bord);border-radius:var(--rad);padding:16px;margin-top:12px;}
+.sub-form.open{display:block;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginWrap" class="login">
+<div class="lcard">
+  <div class="llogo">🛡️ Admin</div>
+  <div class="lsub">BazaarBook Control Panel</div>
+  <input class="inp" id="au" placeholder="Username" type="text"/>
+  <input class="inp" id="ap" placeholder="Password" type="password" onkeydown="if(event.key==='Enter')aLogin()"/>
+  <button class="lbtn" onclick="aLogin()">🔓 Login</button>
+</div>
+</div>
+
+<!-- APP -->
+<div id="adminApp">
+  <div class="mob-ov" id="ov" onclick="closeSB()"></div>
+  <div class="sidebar" id="sb">
+    <div class="slogo">🛡️ Admin<small>BazaarBook</small></div>
+    <button class="slink on" onclick="pg('pDash','📊 Dashboard',this)"><span>📊</span> Dashboard</button>
+    <button class="slink" onclick="pg('pLoc','📍 Locations',this)"><span>📍</span> Locations</button>
+    <button class="slink" onclick="pg('pShops','🏪 Shops',this)"><span>🏪</span> Shops</button>
+    <button class="slink" onclick="pg('pSellers','👨‍💼 Sellers',this)"><span>👨‍💼</span> Sellers</button>
+    <button class="slink" onclick="pg('pBooks','📦 Bookings',this)"><span>📦</span> Bookings</button>
+    <button class="slink" onclick="pg('pTrust','⭐ Trust',this)"><span>⭐</span> Trust Scores</button>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="ham" onclick="toggleSB()">☰</button>
+        <div class="pt" id="pgTitle">📊 Dashboard</div>
+      </div>
+      <button class="lo2" onclick="aLogout()">Logout</button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page on" id="pDash">
+        <div class="sg" id="dStats">
+          <div class="sc c-y"><div class="sc-ic">🏪</div><div class="sc-n" id="ds0">—</div><div class="sc-l">Shops</div></div>
+          <div class="sc c-g"><div class="sc-ic">📦</div><div class="sc-n" id="ds1">—</div><div class="sc-l">Bookings</div></div>
+          <div class="sc c-b"><div class="sc-ic">📍</div><div class="sc-n" id="ds2">—</div><div class="sc-l">Locations</div></div>
+          <div class="sc c-r"><div class="sc-ic">⏳</div><div class="sc-n" id="ds3">—</div><div class="sc-l">Pending</div></div>
+          <div class="sc c-p"><div class="sc-ic">👨‍💼</div><div class="sc-n" id="ds4">—</div><div class="sc-l">Sellers</div></div>
+          <div class="sc c-y"><div class="sc-ic">🕐</div><div class="sc-n" id="ds5">—</div><div class="sc-l">Shop Approvals</div></div>
+        </div>
+        <div class="tw"><div class="th"><span class="tt">📦 Recent Bookings</span></div>
+          <div class="ox"><table><thead><tr><th>ID</th><th>Customer</th><th>Shop</th><th>Status</th></tr></thead><tbody id="dBT"></tbody></table></div>
+        </div>
+        <div class="tw"><div class="th"><span class="tt">🕐 Pending Shop Approvals</span></div>
+          <div class="ox"><table><thead><tr><th>Shop</th><th>Seller</th><th>Location</th><th>Action</th></tr></thead><tbody id="dPST"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- LOCATIONS -->
+      <div class="page" id="pLoc">
+        <div class="fc">
+          <div class="fct">➕ New Location</div>
+          <div class="fg">
+            <div class="fl"><label>Name</label><input id="lN" placeholder="जैसे: Varanasi"/></div>
+            <div class="fl"><label>Type</label><select id="lT"><option value="city">City</option><option value="town">Town</option><option value="village">Village</option></select></div>
+          </div>
+          <button class="savbtn" onclick="addLoc()">➕ Add</button>
+        </div>
+        <div class="tw"><div class="th"><span class="tt">📍 Locations</span><span id="locCnt" class="bd by">—</span></div>
+          <div class="ox"><table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead><tbody id="locT"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- SHOPS -->
+      <div class="page" id="pShops">
+        <div class="fc">
+          <div class="fct">➕ Add Shop (Manual)</div>
+          <div class="fg">
+            <div class="fl"><label>Shop Name</label><input id="shN" placeholder="Ram Kirana"/></div>
+            <div class="fl"><label>Location</label><select id="shL"><option value="">-- Select --</option></select></div>
+          </div>
+          <div class="fg">
+            <div class="fl"><label>Phone</label><input id="shP" placeholder="10 digits"/></div>
+            <div class="fl"><label>UPI ID</label><input id="shU" placeholder="shop@upi (optional)"/></div>
+          </div>
+          <button class="savbtn" onclick="addShop()">➕ Add Shop</button>
+        </div>
+        <div class="tw"><div class="th"><span class="tt">🏪 All Shops</span><span id="shCnt" class="bd by">—</span></div>
+          <div class="ox"><table><thead><tr><th>Shop</th><th>Location</th><th>Seller</th><th>Status</th><th>Approved</th><th>Actions</th></tr></thead><tbody id="shT"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- SELLERS -->
+      <div class="page" id="pSellers">
+        <div class="fc">
+          <div class="fct">➕ Create Seller</div>
+          <div class="fg">
+            <div class="fl"><label>Name</label><input id="slN"/></div>
+            <div class="fl"><label>Email</label><input id="slE" type="email"/></div>
+          </div>
+          <div class="fg">
+            <div class="fl"><label>Phone</label><input id="slPh" maxlength="10"/></div>
+            <div class="fl"><label>Password</label><input id="slPa" type="password"/></div>
+          </div>
+          <button class="savbtn" onclick="addSeller()">➕ Create</button>
+        </div>
+        <div class="tw"><div class="th"><span class="tt">👨‍💼 Sellers</span></div>
+          <div class="ox"><table><thead><tr><th>Name</th><th>Email</th><th>Shop</th><th>Plan</th><th>Status</th><th>Actions</th></tr></thead><tbody id="slT"></tbody></table></div>
+        </div>
+        <div class="sub-form" id="assignSF">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;margin-bottom:10px;color:var(--acc)">🏪 Assign Shop</div>
+          <div class="fl" style="margin-bottom:10px"><label>Shop</label><select id="aShSel"><option value="">-- Select --</option></select></div>
+          <div style="display:flex;gap:8px"><button class="savbtn" onclick="doAssign()">✅ Assign</button><button class="savbtn" style="background:var(--c3);color:var(--tm)" onclick="document.getElementById('assignSF').classList.remove('open')">Cancel</button></div>
+        </div>
+        <div class="sub-form" id="resetPF">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;margin-bottom:10px;color:var(--acc)">🔑 Reset Password</div>
+          <div class="fl" style="margin-bottom:10px"><label>New Password</label><input class="inp" id="npInp" type="password" style="margin:0"/></div>
+          <div style="display:flex;gap:8px"><button class="savbtn" onclick="doReset()">✅ Reset</button><button class="savbtn" style="background:var(--c3);color:var(--tm)" onclick="document.getElementById('resetPF').classList.remove('open')">Cancel</button></div>
+        </div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div class="page" id="pBooks">
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+          <select class="inp" id="bfS" onchange="loadBooks()" style="width:auto;padding:8px 12px;margin:0"><option value="">All Status</option><option>pending</option><option>packing</option><option>ready</option><option>completed</option><option>cancelled</option></select>
+          <select class="inp" id="bfSh" onchange="loadBooks()" style="width:auto;padding:8px 12px;margin:0"><option value="">All Shops</option></select>
+        </div>
+        <div class="tw"><div class="th"><span class="tt">📦 Bookings</span><span id="bkCnt" class="bd by">—</span></div>
+          <div class="ox"><table><thead><tr><th>ID</th><th>Customer</th><th>Phone</th><th>Shop</th><th>Product</th><th>Qty</th><th>Amount</th><th>Trust</th><th>Status</th><th>Time Left</th><th>Action</th></tr></thead><tbody id="bkT"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- TRUST -->
+      <div class="page" id="pTrust">
+        <div class="tw"><div class="th"><span class="tt">⭐ Trust Scores</span></div>
+          <div class="ox"><table><thead><tr><th>Customer</th><th>Phone</th><th>Score</th><th>Total</th><th>Completed</th><th>No-shows</th><th>Action</th></tr></thead><tbody id="trT"></tbody></table></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API='/api';
+let atok=sessionStorage.getItem('atok');
+let selId=null;
+let allShops2=[];
+
+if(atok)initAdmin();
+
+async function aLogin(){
+  const u=document.getElementById('au').value.trim();
+  const p=document.getElementById('ap').value;
+  if(!u||!p)return toast('⚠️ Fill all fields');
+  try{
+    const r=await post('/auth/admin/login',{username:u,password:p});
+    if(r.error)return toast('❌ '+r.error);
+    sessionStorage.setItem('atok',r.token);atok=r.token;initAdmin();
+  }catch(e){toast('❌ Login failed');}
+}
+
+function aLogout(){sessionStorage.clear();location.reload();}
+
+async function initAdmin(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('adminApp').style.display='flex';
+  document.getElementById('adminApp').style.display='block';
+  loadDash();loadShopsForFilter();
+}
+
+// DASHBOARD
+async function loadDash(){
+  try{
+    const s=await ag('/admin/stats');
+    [s.shops,s.bookings,s.locs,s.pending,s.sellers,s.pendingShops].forEach((v,i)=>document.getElementById('ds'+i).textContent=v);
+    const bks=await ag('/bookings/admin/all');
+    document.getElementById('dBT').innerHTML=bks.slice(0,8).map(b=>`<tr><td style="font-family:'Baloo 2',cursive;color:var(--acc);font-size:12px">${b.bookingId}</td><td>${b.customerName}</td><td>${b.shopId?.name||'—'}</td><td>${stBd(b.status)}</td></tr>`).join('')||`<tr><td colspan="4" class="empty-r">No bookings</td></tr>`;
+    // Pending shops
+    const shops=await ag('/shops');
+    const pending=shops.filter(s=>!s.isApproved);
+    document.getElementById('dPST').innerHTML=pending.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.sellerId?.name||'—'}</td><td>${s.locationId?.name||'—'}</td><td class="ac-row"><button class="ab ag" onclick="approveShop('${s._id}',true)">✅ Approve</button><button class="ab ad" onclick="approveShop('${s._id}',false)">❌ Reject</button></td></tr>`).join('')||`<tr><td colspan="4" class="empty-r">No pending approvals</td></tr>`;
+  }catch(e){console.error(e);}
+}
+
+// LOCATIONS
+async function loadLoc(){
+  try{
+    const locs=await ag('/locations/all');
+    document.getElementById('locCnt').textContent=locs.length;
+    document.getElementById('locT').innerHTML=locs.map(l=>`<tr><td><b>${l.name}</b></td><td>${typBd(l.type)}</td><td>${l.isActive?'<span class="bd bg">Active</span>':'<span class="bd br">Inactive</span>'}</td><td class="ac-row"><button class="ab ${l.isActive?'ay':'ag'}" onclick="togLoc('${l._id}',${!l.isActive})">${l.isActive?'Deactivate':'Activate'}</button><button class="ab ad" onclick="delLoc('${l._id}')">🗑️</button></td></tr>`).join('')||`<tr><td colspan="4" class="empty-r">No locations</td></tr>`;
+    // populate shop location dropdown
+    const shL=document.getElementById('shL');
+    shL.innerHTML='<option value="">-- Select --</option>'+locs.filter(l=>l.isActive).map(l=>`<option value="${l._id}">${l.name}</option>`).join('');
+  }catch(e){}
+}
+
+async function addLoc(){
+  const name=document.getElementById('lN').value.trim();const type=document.getElementById('lT').value;
+  if(!name)return toast('⚠️ Name required');
+  try{await ap('/locations',{name,type});toast('✅ Added!');document.getElementById('lN').value='';loadLoc();}catch(e){toast('❌ Failed');}
+}
+async function togLoc(id,val){await ap('/locations/'+id,{isActive:val},'PUT');loadLoc();}
+async function delLoc(id){if(!confirm('Delete?'))return;await ap('/locations/'+id,{},'DELETE');toast('🗑️ Deleted');loadLoc();}
+
+// SHOPS
+async function loadShops(){
+  try{
+    const shops=await ag('/shops');
+    allShops2=shops;
+    document.getElementById('shCnt').textContent=shops.length;
+    document.getElementById('shT').innerHTML=shops.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.locationId?.name||'—'}</td><td>${s.sellerId?.name||'—'}</td><td>${s.isActive?'<span class="bd bg">Active</span>':'<span class="bd br">Off</span>'}</td><td>${s.isApproved?'<span class="bd bg">✅</span>':'<span class="bd by">⏳ Pending</span>'}</td><td class="ac-row"><button class="ab ag" onclick="approveShop('${s._id}',true)">✅</button><button class="ab ${s.isActive?'ay':'ag'}" onclick="togShop('${s._id}',${!s.isActive})">${s.isActive?'Off':'On'}</button><button class="ab ad" onclick="delShop('${s._id}')">🗑️</button></td></tr>`).join('')||`<tr><td colspan="6" class="empty-r">No shops</td></tr>`;
+    // update assign shop dropdown
+    document.getElementById('aShSel').innerHTML='<option value="">-- Select Shop --</option>'+shops.map(s=>`<option value="${s._id}">${s.name}</option>`).join('');
+  }catch(e){}
+}
+
+async function addShop(){
+  const name=document.getElementById('shN').value.trim();const locationId=document.getElementById('shL').value;const phone=document.getElementById('shP').value.trim();const upiId=document.getElementById('shU').value.trim();
+  if(!name||!locationId||!phone)return toast('⚠️ Name, location, phone required');
+  try{await ap('/shops',{name,locationId,phone,upiId,isApproved:true});toast('✅ Shop added!');['shN','shP','shU'].forEach(i=>document.getElementById(i).value='');loadShops();}catch(e){toast('❌ Failed');}
+}
+
+async function approveShop(id,val){
+  await ap('/shops/'+id,{isApproved:val,isActive:val},'PUT');
+  toast(val?'✅ Approved!':'❌ Rejected');loadShops();loadDash();
+}
+async function togShop(id,val){await ap('/shops/'+id,{isActive:val},'PUT');toast('✅ Updated');loadShops();}
+async function delShop(id){if(!confirm('Delete shop?'))return;await ap('/shops/'+id,{},'DELETE');toast('🗑️');loadShops();}
+
+async function loadShopsForFilter(){
+  try{const shops=await ag('/shops');const sel=document.getElementById('bfSh');sel.innerHTML='<option value="">All Shops</option>'+shops.map(s=>`<option value="${s._id}">${s.name}</option>`).join('');}catch(e){}
+}
+
+// SELLERS
+async function loadSellers(){
+  try{
+    const sels=await ag('/admin/sellers');
+    document.getElementById('slT').innerHTML=sels.map(s=>`<tr><td><b>${s.name}</b></td><td>${s.email}</td><td>${s.shopId?.name||'<span style="color:var(--tm)">—</span>'}</td><td><span class="bd ${s.plan==='paid'?'bg':'bgr'}">${s.plan}</span></td><td>${s.isBlocked?'<span class="bd br">Blocked</span>':'<span class="bd bg">Active</span>'}</td><td class="ac-row"><button class="ab ${s.isBlocked?'ag':'ay'}" onclick="togBlock('${s._id}')">${s.isBlocked?'Unblock':'Block'}</button><button class="ab ae" onclick="showAssign('${s._id}')">Assign Shop</button><button class="ab am" onclick="showReset('${s._id}')">Reset Pass</button></td></tr>`).join('')||`<tr><td colspan="6" class="empty-r">No sellers</td></tr>`;
+  }catch(e){}
+}
+
+async function addSeller(){
+  const name=document.getElementById('slN').value.trim();const email=document.getElementById('slE').value.trim();const phone=document.getElementById('slPh').value.trim();const password=document.getElementById('slPa').value;
+  if(!name||!email||!phone||!password)return toast('⚠️ All required');
+  try{await ap('/admin/sellers',{name,email,phone,password});toast('✅ Seller created!');['slN','slE','slPh','slPa'].forEach(i=>document.getElementById(i).value='');loadSellers();}catch(e){toast('❌ Failed: '+e.message||e);}
+}
+
+async function togBlock(id){await ap('/admin/sellers/'+id+'/block',{},'PUT');toast('✅ Updated');loadSellers();}
+function showAssign(id){selId=id;document.getElementById('assignSF').classList.add('open');document.getElementById('resetPF').classList.remove('open');document.getElementById('assignSF').scrollIntoView({behavior:'smooth'});}
+async function doAssign(){const shopId=document.getElementById('aShSel').value;await ap('/admin/sellers/'+selId+'/assign-shop',{shopId},'PUT');toast('✅ Assigned!');document.getElementById('assignSF').classList.remove('open');loadSellers();}
+function showReset(id){selId=id;document.getElementById('resetPF').classList.add('open');document.getElementById('assignSF').classList.remove('open');document.getElementById('resetPF').scrollIntoView({behavior:'smooth'});}
+async function doReset(){const p=document.getElementById('npInp').value;if(!p)return toast('⚠️ Enter password');await ap('/admin/sellers/'+selId+'/reset-password',{newPassword:p},'PUT');toast('✅ Reset!');document.getElementById('resetPF').classList.remove('open');}
+
+// BOOKINGS
+async function loadBooks(){
+  const s=document.getElementById('bfS').value;const sh=document.getElementById('bfSh').value;
+  let url='/bookings/admin/all?';if(s)url+='status='+s+'&';if(sh)url+='shopId='+sh;
+  try{
+    const bks=await ag(url);
+    document.getElementById('bkCnt').textContent=bks.length;
+    document.getElementById('bkT').innerHTML=bks.map(b=>{
+      const mins=Math.max(0,Math.floor((new Date(b.expiresAt)-Date.now())/60000));
+      return `<tr><td style="font-family:'Baloo 2',cursive;color:var(--acc);font-size:11px">${b.bookingId}</td><td>${b.customerName}</td><td>${b.phone}</td><td>${b.shopId?.name||'—'}</td><td>${b.productId?.name||'—'}</td><td>${b.quantity}</td><td style="color:var(--acc);font-weight:600">₹${b.totalAmount||0}</td><td><span style="color:var(--acc)">⭐${b.trustScoreSnapshot||5}</span></td><td>${stBd(b.status)}</td><td style="color:${mins<10?'var(--r)':'var(--tm)'};font-size:12px">${mins}m</td><td>${!['cancelled','completed'].includes(b.status)?`<button class="ab ad" onclick="cancelBk('${b._id}')">Cancel</button>`:'—'}</td></tr>`;
+    }).join('')||`<tr><td colspan="11" class="empty-r">No bookings</td></tr>`;
+  }catch(e){}
+}
+
+async function cancelBk(id){if(!confirm('Force cancel?'))return;await ap('/bookings/'+id+'/cancel',{},'PUT');toast('✅ Cancelled');loadBooks();}
+
+// TRUST
+async function loadTrust(){
+  try{
+    const tr=await ag('/admin/trust');
+    document.getElementById('trT').innerHTML=tr.map(t=>`<tr><td><b>${t.customerName||'—'}</b></td><td>${t.phone}</td><td><span style="font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:${t.score>=7?'var(--g)':t.score>=4?'var(--acc)':'var(--r)'}">${t.score}</span></td><td>${t.totalBookings}</td><td><span class="bd bg">${t.completedBookings}</span></td><td><span class="bd br">${t.noShows}</span></td><td><button class="ab ae" onclick="resetTrust('${t._id}')">🔄 Reset</button></td></tr>`).join('')||`<tr><td colspan="7" class="empty-r">No data</td></tr>`;
+  }catch(e){}
+}
+
+async function resetTrust(id){if(!confirm('Reset to 5?'))return;await ap('/admin/trust/'+id+'/reset',{},'PUT');toast('✅ Reset');loadTrust();}
+
+// NAV
+function pg(id,title,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.slink').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('pgTitle').textContent=title;
+  closeSB();
+  if(id==='pDash')loadDash();
+  if(id==='pLoc')loadLoc();
+  if(id==='pShops'){loadLoc();loadShops();}
+  if(id==='pSellers'){loadSellers();loadShops();}
+  if(id==='pBooks')loadBooks();
+  if(id==='pTrust')loadTrust();
+}
+
+function toggleSB(){document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('open');}
+function closeSB(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('open');}
+
+// HELPERS
+function stBd(s){const m={pending:'by',packing:'bb',ready:'bg',completed:'bm',cancelled:'br'};const l={pending:'⏳ Pending',packing:'📦 Packing',ready:'✅ Ready',completed:'🏆 Done',cancelled:'❌ Cancelled'};return `<span class="bd ${m[s]||'bgr'}">${l[s]||s}</span>`;}
+function typBd(t){const m={city:'bb',town:'bg',village:'by'};const l={city:'🏙️ City',town:'🏘️ Town',village:'🌾 Village'};return `<span class="bd ${m[t]||'bgr'}">${l[t]||t}</span>`;}
+
+async function ag(url){const r=await fetch(API+url,{headers:{Authorization:'Bearer '+atok}});return r.json();}
+async function ap(url,body,method='POST'){const r=await fetch(API+url,{method,headers:{'Content-Type':'application/json','Authorization':'Bearer '+atok},body:JSON.stringify(body)});return r.json();}
+async function post(url,body){const r=await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.json();}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>
