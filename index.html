@@ -3,893 +3,691 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Kirana — अपने घर की दुकान</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Admin Panel — Smart Kirana</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --saffron: #FF6B00;
-    --saffron-light: #FF8C38;
-    --saffron-glow: rgba(255,107,0,0.15);
-    --green: #22C55E;
-    --green-dark: #16A34A;
-    --cream: #FFFBF5;
-    --warm-white: #FFF8EE;
-    --ink: #1A0F00;
-    --ink-soft: #4A3728;
-    --ink-muted: #8B7355;
-    --border: #F0E0C8;
-    --shadow: 0 4px 24px rgba(255,107,0,0.12);
-    --shadow-lg: 0 8px 40px rgba(255,107,0,0.2);
-    --radius: 16px;
-    --radius-sm: 10px;
+    --admin: #0F172A;
+    --admin2: #1E293B;
+    --admin3: #334155;
+    --accent: #F59E0B;
+    --accent2: #FBBF24;
+    --green: #10B981;
+    --red: #EF4444;
+    --blue: #3B82F6;
+    --purple: #8B5CF6;
+    --text: #F1F5F9;
+    --text-muted: #94A3B8;
+    --border: #334155;
+    --card: #1E293B;
+    --radius: 14px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Mukta',sans-serif;background:var(--admin);color:var(--text);min-height:100vh;}
+
+  /* ── LOGIN ── */
+  .login-wrap{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
+  }
+  .login-card{
+    background:var(--card);border-radius:24px;padding:36px 28px;width:100%;max-width:380px;
+    border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .login-logo{font-family:'Baloo 2',cursive;font-size:32px;font-weight:800;color:var(--accent);text-align:center;margin-bottom:4px;}
+  .login-sub{text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:32px;}
+  .inp{
+    width:100%;padding:13px 16px;background:var(--admin3);border:2px solid var(--border);
+    border-radius:10px;font-family:'Mukta',sans-serif;font-size:16px;color:var(--text);
+    outline:none;margin-bottom:12px;transition:border-color 0.2s;
+  }
+  .inp:focus{border-color:var(--accent);}
+  .btn-login{
+    width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#D97706);
+    border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;
+    color:var(--admin);cursor:pointer;transition:all 0.2s;margin-top:4px;
+  }
+  .btn-login:active{transform:scale(0.98);}
+
+  /* ── LAYOUT ── */
+  #adminApp{display:none;}
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--admin2);
+    border-right:1px solid var(--border);z-index:100;overflow-y:auto;
+    transition:transform 0.3s;
+  }
+  .sidebar-logo{
+    padding:20px 20px 16px;border-bottom:1px solid var(--border);
+    font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--accent);
+  }
+  .sidebar-logo span{font-size:12px;color:var(--text-muted);font-weight:400;font-family:'Mukta',sans-serif;display:block;}
+  .nav-link{
+    display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;
+    color:var(--text-muted);font-size:15px;font-weight:500;border:none;background:none;
+    width:100%;text-align:left;transition:all 0.2s;border-left:3px solid transparent;
+  }
+  .nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+  .nav-link.active{color:var(--accent);background:rgba(245,158,11,0.1);border-left-color:var(--accent);}
+  .nav-icon{font-size:18px;width:24px;text-align:center;}
+
+  .main{margin-left:240px;min-height:100vh;}
+  .top-bar2{
+    padding:16px 24px;background:var(--admin2);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;
+  }
+  .page-title{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;}
+  .logout2{background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text-muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;}
+
+  .content{padding:24px;}
+
+  /* Mobile sidebar toggle */
+  .ham{display:none;background:none;border:none;color:var(--text);font-size:24px;cursor:pointer;}
+
+  /* ── STAT CARDS ── */
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+  .stat2{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--border);text-align:center;}
+  .stat2-icon{font-size:30px;margin-bottom:8px;}
+  .stat2-num{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;}
+  .stat2-label{font-size:12px;color:var(--text-muted);margin-top:2px;}
+  .stat2.s-yellow .stat2-num{color:var(--accent);}
+  .stat2.s-green .stat2-num{color:var(--green);}
+  .stat2.s-blue .stat2-num{color:var(--blue);}
+  .stat2.s-purple .stat2-num{color:var(--purple);}
+  .stat2.s-red .stat2-num{color:var(--red);}
+
+  /* ── TABLE ── */
+  .table-wrap{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
+  .table-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .table-title{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;}
+  table{width:100%;border-collapse:collapse;}
+  th{padding:12px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+  td{padding:13px 16px;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,0.03);}
+  .overflow-x{overflow-x:auto;}
+
+  /* ── BADGES ── */
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+  .badge-green{background:rgba(16,185,129,0.15);color:var(--green);}
+  .badge-red{background:rgba(239,68,68,0.15);color:var(--red);}
+  .badge-yellow{background:rgba(245,158,11,0.15);color:var(--accent);}
+  .badge-blue{background:rgba(59,130,246,0.15);color:var(--blue);}
+  .badge-gray{background:rgba(148,163,184,0.15);color:var(--text-muted);}
+
+  /* ── ACTION BTNS ── */
+  .action-btn{padding:6px 12px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+  .ab-edit{background:rgba(59,130,246,0.15);color:var(--blue);}
+  .ab-del{background:rgba(239,68,68,0.15);color:var(--red);}
+  .ab-block{background:rgba(245,158,11,0.15);color:var(--accent);}
+  .ab-green{background:rgba(16,185,129,0.15);color:var(--green);}
+  .ab-gray{background:rgba(148,163,184,0.15);color:var(--text-muted);}
+  .actions-cell{display:flex;gap:6px;flex-wrap:wrap;}
+
+  /* ── ADD FORM ── */
+  .add-form{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin-bottom:20px;}
+  .add-form-title{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;margin-bottom:14px;color:var(--accent);}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .form-row.single{grid-template-columns:1fr;}
+  .form-row.triple{grid-template-columns:1fr 1fr 1fr;}
+  .field-group label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
+  .field-group input,.field-group select{
+    width:100%;padding:11px 14px;background:var(--admin3);border:1px solid var(--border);
+    border-radius:8px;font-family:'Mukta',sans-serif;font-size:15px;color:var(--text);outline:none;
+    transition:border-color 0.2s;
+  }
+  .field-group input:focus,.field-group select:focus{border-color:var(--accent);}
+  .field-group select option{background:var(--admin3);}
+  .save-btn{
+    padding:10px 24px;background:linear-gradient(135deg,var(--accent),#D97706);
+    border:none;border-radius:8px;font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;
+    color:var(--admin);cursor:pointer;transition:all 0.2s;
+  }
+  .save-btn:active{transform:scale(0.97);}
+
+  /* ── SCREENS ── */
+  .page{display:none;}
+  .page.active{display:block;}
+
+  /* ── FILTER BAR ── */
+  .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+  .filter-select{
+    padding:8px 14px;background:var(--card);border:1px solid var(--border);
+    border-radius:8px;color:var(--text);font-size:14px;outline:none;cursor:pointer;
+  }
+  .filter-select option{background:var(--admin3);}
+
+  /* Toast */
+  .toast2{
+    position:fixed;bottom:24px;right:24px;background:var(--admin2);color:var(--text);
+    padding:12px 20px;border-radius:10px;font-size:14px;opacity:0;
+    transition:all 0.3s;z-index:999;border:1px solid var(--border);
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  }
+  .toast2.show{opacity:1;}
+
+  /* Mobile */
+  @media(max-width:768px){
+    .sidebar{transform:translateX(-100%);}
+    .sidebar.open{transform:translateX(0);}
+    .main{margin-left:0;}
+    .ham{display:block;}
+    .stats-row{grid-template-columns:1fr 1fr;}
+    .form-row{grid-template-columns:1fr;}
+    .form-row.triple{grid-template-columns:1fr 1fr;}
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+  .mobile-overlay.open{display:block;}
 
-  body {
-    font-family: 'Mukta', sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── HEADER ─── */
-  .app-header {
-    background: linear-gradient(135deg, var(--saffron) 0%, #FF8C38 100%);
-    color: white;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 20px rgba(255,107,0,0.4);
-  }
-
-  .logo {
-    font-family: 'Baloo 2', cursive;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-
-  .logo span { opacity: 0.85; font-size: 14px; display: block; font-weight: 500; line-height: 1; }
-
-  /* ─── SCREENS ─── */
-  .screen { display: none; min-height: calc(100vh - 60px); }
-  .screen.active { display: block; }
-
-  /* ─── HERO ─── */
-  .hero-section {
-    background: linear-gradient(160deg, #FF6B00 0%, #FF8C38 40%, #FFB366 100%);
-    padding: 40px 24px 60px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-section::before {
-    content: '🛒';
-    font-size: 120px;
-    position: absolute;
-    right: -20px;
-    top: -10px;
-    opacity: 0.12;
-    transform: rotate(15deg);
-  }
-
-  .hero-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 32px;
-    font-weight: 800;
-    color: white;
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
-
-  .hero-sub {
-    color: rgba(255,255,255,0.9);
-    font-size: 16px;
-    margin-bottom: 32px;
-  }
-
-  /* ─── CARDS ─── */
-  .card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 20px;
-    margin: 16px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-  }
-
-  .card-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 16px;
-  }
-
-  /* ─── SELECT ─── */
-  .select-wrap { position: relative; }
-  .select-wrap::after {
-    content: '▾';
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--saffron);
-    font-size: 18px;
-    pointer-events: none;
-  }
-
-  select, input {
-    width: 100%;
-    padding: 14px 16px;
-    border: 2px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-family: 'Mukta', sans-serif;
-    font-size: 16px;
-    color: var(--ink);
-    background: white;
-    outline: none;
-    appearance: none;
-    transition: border-color 0.2s;
-  }
-
-  select:focus, input:focus { border-color: var(--saffron); }
-
-  /* ─── BUTTONS ─── */
-  .btn {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: 'Baloo 2', cursive;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-light) 100%);
-    color: white;
-    box-shadow: 0 4px 16px rgba(255,107,0,0.35);
-  }
-
-  .btn-primary:active { transform: scale(0.98); }
-
-  .btn-green {
-    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
-    color: white;
-    box-shadow: 0 4px 16px rgba(34,197,94,0.35);
-  }
-
-  .btn-outline {
-    background: transparent;
-    border: 2px solid var(--saffron);
-    color: var(--saffron);
-  }
-
-  .btn-sm {
-    width: auto;
-    padding: 10px 20px;
-    font-size: 15px;
-  }
-
-  /* ─── SHOP CARD ─── */
-  .shop-list { padding: 0 16px; }
-
-  .shop-card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 18px;
-    margin-bottom: 14px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .shop-card:active { transform: scale(0.99); box-shadow: var(--shadow-lg); }
-
-  .shop-icon {
-    width: 56px;
-    height: 56px;
-    background: var(--saffron-glow);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    flex-shrink: 0;
-  }
-
-  .shop-info h3 {
-    font-family: 'Baloo 2', cursive;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--ink);
-  }
-
-  .shop-info p { font-size: 14px; color: var(--ink-muted); margin-top: 2px; }
-
-  .shop-arrow {
-    margin-left: auto;
-    color: var(--saffron);
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-
-  /* ─── PRODUCT GRID ─── */
-  .product-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 0 16px;
-  }
-
-  .product-card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    text-align: center;
-  }
-
-  .product-emoji { font-size: 36px; margin-bottom: 8px; }
-
-  .product-name {
-    font-family: 'Baloo 2', cursive;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  .product-price {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--saffron);
-    margin: 4px 0 8px;
-  }
-
-  .product-unit { font-size: 12px; color: var(--ink-muted); margin-bottom: 10px; }
-
-  .book-btn {
-    background: var(--saffron);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-family: 'Baloo 2', cursive;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.2s;
-  }
-
-  .book-btn:active { transform: scale(0.97); }
-
-  /* ─── OTP BOXES ─── */
-  .otp-inputs {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin: 16px 0;
-  }
-
-  .otp-inputs input {
-    width: 48px;
-    height: 56px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    border-radius: 10px;
-    padding: 0;
-  }
-
-  /* ─── SUCCESS ─── */
-  .success-screen {
-    text-align: center;
-    padding: 40px 24px;
-  }
-
-  .success-icon {
-    width: 100px;
-    height: 100px;
-    background: linear-gradient(135deg, #22C55E, #16A34A);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 50px;
-    margin: 0 auto 24px;
-    box-shadow: 0 8px 24px rgba(34,197,94,0.35);
-    animation: pop 0.4s ease;
-  }
-
-  @keyframes pop {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-  }
-
-  .success-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 8px;
-  }
-
-  .booking-id-badge {
-    background: var(--saffron-glow);
-    border: 2px dashed var(--saffron);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    margin: 20px 0;
-    font-family: 'Baloo 2', cursive;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--saffron);
-    letter-spacing: 2px;
-  }
-
-  .countdown-box {
-    background: #FFF3E0;
-    border: 2px solid #FFB74D;
-    border-radius: var(--radius-sm);
-    padding: 16px;
-    margin: 16px 0;
-  }
-
-  .countdown-label { font-size: 14px; color: var(--ink-muted); margin-bottom: 6px; }
-
-  .countdown-timer {
-    font-family: 'Baloo 2', cursive;
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--saffron);
-  }
-
-  /* ─── TAGS ─── */
-  .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .tag-city { background: #EFF6FF; color: #2563EB; }
-  .tag-town { background: #F0FDF4; color: #16A34A; }
-  .tag-village { background: #FFF7ED; color: #EA580C; }
-
-  /* ─── BACK BTN ─── */
-  .back-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 8px;
-  }
-
-  /* ─── SECTION LABEL ─── */
-  .section-label {
-    font-family: 'Baloo 2', cursive;
-    font-size: 20px;
-    font-weight: 700;
-    padding: 16px 20px 8px;
-    color: var(--ink);
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 48px 24px;
-    color: var(--ink-muted);
-  }
-
-  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
-
-  .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
-
-  .qty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-  .qty-btn {
-    width: 40px; height: 40px;
-    background: var(--saffron-glow);
-    border: 2px solid var(--saffron);
-    border-radius: 8px;
-    color: var(--saffron);
-    font-size: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .qty-display {
-    font-family: 'Baloo 2', cursive;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--ink);
-    min-width: 32px;
-    text-align: center;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--ink);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-size: 15px;
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 999;
-    white-space: nowrap;
-  }
-
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .loading {
-    text-align: center;
-    padding: 40px;
-    color: var(--ink-muted);
-    font-size: 16px;
-  }
-
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--saffron);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 12px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .upi-box {
-    background: #F0FDF4;
-    border: 2px solid #22C55E;
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    text-align: center;
-    margin: 12px 0;
-  }
-
-  .upi-label { font-size: 12px; color: var(--green-dark); margin-bottom: 4px; }
-  .upi-id { font-family: 'Baloo 2', cursive; font-size: 17px; font-weight: 700; color: var(--green-dark); }
+  .empty-row{text-align:center;padding:32px;color:var(--text-muted);}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="app-header" id="appHeader">
-  <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">←</button>
-  <div class="logo">
-    🛒 Smart Kirana
-    <span>आपकी अपनी दुकान</span>
-  </div>
-  <div style="font-size:20px">📍</div>
-</header>
-
-<!-- SCREEN 1: SELECT AREA -->
-<div class="screen active" id="screenArea">
-  <div class="hero-section">
-    <div class="hero-title">नमस्ते! 🙏<br>कहाँ से हैं आप?</div>
-    <div class="hero-sub">अपना इलाका चुनें, पास की दुकान खोजें</div>
-  </div>
-
-  <div class="card" style="margin-top:-24px;border-radius:24px 24px 16px 16px;">
-    <div class="card-title">📍 अपना इलाका चुनें</div>
-    <div class="select-wrap">
-      <select id="locationSelect" onchange="onLocationSelect()">
-        <option value="">-- इलाका चुनें --</option>
-      </select>
-    </div>
-    <div id="locationLoading" class="loading" style="padding:16px;display:none">
-      <div class="spinner"></div>
-      <div>लोड हो रहा है...</div>
-    </div>
+<!-- LOGIN -->
+<div id="loginWrap" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">🛡️ Admin Panel</div>
+    <div class="login-sub">Smart Kirana — Full Control</div>
+    <input class="inp" type="text" id="adminUser" placeholder="Username" />
+    <input class="inp" type="password" id="adminPass" placeholder="Password" />
+    <button class="btn-login" onclick="adminLogin()">🔓 Login</button>
   </div>
 </div>
 
-<!-- SCREEN 2: SHOP LIST -->
-<div class="screen" id="screenShops">
-  <div class="section-label" id="areaTitle">दुकानें</div>
-  <div id="shopList" class="shop-list">
-    <div class="loading"><div class="spinner"></div><div>दुकानें खोज रहे हैं...</div></div>
+<!-- ADMIN APP -->
+<div id="adminApp">
+  <div class="mobile-overlay" id="overlay" onclick="closeSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">🛡️ Admin Panel<span>Smart Kirana</span></div>
+    <button class="nav-link active" onclick="showPage('pgDash','📊 Dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
+    <button class="nav-link" onclick="showPage('pgLocations','📍 Locations',this)"><span class="nav-icon">📍</span> Locations</button>
+    <button class="nav-link" onclick="showPage('pgShops','🏪 Shops',this)"><span class="nav-icon">🏪</span> Shops</button>
+    <button class="nav-link" onclick="showPage('pgSellers','👨‍💼 Sellers',this)"><span class="nav-icon">👨‍💼</span> Sellers</button>
+    <button class="nav-link" onclick="showPage('pgBookings','📦 Bookings',this)"><span class="nav-icon">📦</span> Bookings</button>
+    <button class="nav-link" onclick="showPage('pgTrust','⭐ Trust',this)"><span class="nav-icon">⭐</span> Trust Scores</button>
   </div>
-</div>
 
-<!-- SCREEN 3: SHOP PRODUCTS -->
-<div class="screen" id="screenProducts">
-  <div class="card">
-    <div id="shopDetailInfo"></div>
-  </div>
-  <div class="section-label">उपलब्ध सामान</div>
-  <div id="productGrid" class="product-grid"></div>
-</div>
-
-<!-- SCREEN 4: BOOKING FORM -->
-<div class="screen" id="screenBook">
-  <div class="card">
-    <div class="card-title" id="bookingProductTitle">बुकिंग करें</div>
-    <div id="productSummary" style="margin-bottom:16px;padding:12px;background:var(--saffron-glow);border-radius:10px;"></div>
-
-    <div class="qty-row">
-      <span style="font-weight:600;font-size:15px;">मात्रा:</span>
-      <button class="qty-btn" onclick="changeQty(-1)">−</button>
-      <span class="qty-display" id="qtyDisplay">1</span>
-      <button class="qty-btn" onclick="changeQty(1)">+</button>
-      <span style="color:var(--ink-muted);font-size:14px;" id="unitLabel">piece</span>
-    </div>
-
-    <div class="form-group">
-      <label>आपका नाम *</label>
-      <input type="text" id="custName" placeholder="जैसे: Ravi Kumar" />
-    </div>
-    <div class="form-group">
-      <label>मोबाइल नंबर *</label>
-      <input type="tel" id="custPhone" placeholder="10 अंक का नंबर" maxlength="10" />
-    </div>
-    <button class="btn btn-primary" onclick="sendOTP()">📱 OTP भेजें</button>
-  </div>
-</div>
-
-<!-- SCREEN 5: OTP VERIFY -->
-<div class="screen" id="screenOTP">
-  <div class="card">
-    <div class="card-title">📱 OTP दर्ज करें</div>
-    <p style="color:var(--ink-muted);font-size:15px;margin-bottom:8px;" id="otpSentTo"></p>
-
-    <div class="otp-inputs">
-      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,0)" />
-      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,1)" />
-      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,2)" />
-      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,3)" />
-      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,4)" />
-      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,5)" />
-    </div>
-
-    <button class="btn btn-primary" onclick="verifyOTP()">✅ OTP सत्यापित करें</button>
-    <button class="btn btn-outline" style="margin-top:10px;" onclick="sendOTP()">🔄 OTP दोबारा भेजें</button>
-    <p id="devOtpHint" style="text-align:center;color:var(--saffron);font-weight:600;margin-top:10px;display:none;"></p>
-  </div>
-</div>
-
-<!-- SCREEN 6: SUCCESS -->
-<div class="screen" id="screenSuccess">
-  <div class="success-screen">
-    <div class="success-icon">✅</div>
-    <div class="success-title">बुकिंग हो गई!</div>
-    <p style="color:var(--ink-muted);font-size:16px;">आपकी बुकिंग सफलतापूर्वक दर्ज हो गई है</p>
-
-    <div class="booking-id-badge" id="successBookingId">BK-XXXXXX</div>
-
-    <div class="countdown-box">
-      <div class="countdown-label">⏳ इतने समय में लेने आएं</div>
-      <div class="countdown-timer" id="pickupTimer">45:00</div>
-    </div>
-
-    <div id="successUPI"></div>
-
-    <div style="background:#F0FDF4;border-radius:var(--radius-sm);padding:14px;margin:12px 0;text-align:left;">
-      <div id="successDetails"></div>
-    </div>
-
-    <button class="btn btn-primary" onclick="goHome()" style="margin-top:8px;">🏠 होम पर जाएं</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-const API = '';
-let state = {
-  locations: [],
-  selectedLocation: null,
-  selectedShop: null,
-  selectedProduct: null,
-  quantity: 1,
-  customerName: '',
-  customerPhone: '',
-  screenHistory: ['screenArea'],
-  pickupInterval: null
-};
-
-// ─── INIT ───
-window.onload = async () => {
-  await loadLocations();
-};
-
-async function loadLocations() {
-  document.getElementById('locationLoading').style.display = 'block';
-  try {
-    const res = await fetch(`${API}/api/locations`);
-    state.locations = await res.json();
-    const sel = document.getElementById('locationSelect');
-    state.locations.forEach(loc => {
-      const opt = document.createElement('option');
-      opt.value = loc._id;
-      opt.textContent = `${loc.name} (${loc.type === 'city' ? 'शहर' : loc.type === 'town' ? 'कस्बा' : 'गाँव'})`;
-      sel.appendChild(opt);
-    });
-  } catch(e) {
-    showToast('❌ कनेक्शन में समस्या');
-  }
-  document.getElementById('locationLoading').style.display = 'none';
-}
-
-function onLocationSelect() {
-  const locId = document.getElementById('locationSelect').value;
-  if (!locId) return;
-  state.selectedLocation = state.locations.find(l => l._id === locId);
-  loadShops(locId);
-}
-
-async function loadShops(locationId) {
-  showScreen('screenShops');
-  document.getElementById('areaTitle').textContent = `📍 ${state.selectedLocation?.name} — दुकानें`;
-  document.getElementById('shopList').innerHTML = '<div class="loading"><div class="spinner"></div><div>दुकानें खोज रहे हैं...</div></div>';
-
-  try {
-    const res = await fetch(`${API}/api/shops/location/${locationId}`);
-    const shops = await res.json();
-    renderShops(shops);
-  } catch(e) {
-    document.getElementById('shopList').innerHTML = '<div class="empty-state"><div class="emoji">😕</div><p>दुकानें लोड नहीं हुईं</p></div>';
-  }
-}
-
-function renderShops(shops) {
-  const cont = document.getElementById('shopList');
-  if (!shops.length) {
-    cont.innerHTML = '<div class="empty-state"><div class="emoji">🏪</div><p>इस इलाके में कोई दुकान नहीं मिली</p></div>';
-    return;
-  }
-  cont.innerHTML = shops.map(shop => `
-    <div class="shop-card" onclick="openShop('${shop._id}')">
-      <div class="shop-icon">🏪</div>
-      <div class="shop-info">
-        <h3>${shop.name}</h3>
-        <p>📞 ${shop.phone}</p>
-        ${shop.upiId ? `<p>💳 UPI: ${shop.upiId}</p>` : ''}
-      </div>
-      <div class="shop-arrow">›</div>
-    </div>
-  `).join('');
-}
-
-async function openShop(shopId) {
-  showScreen('screenProducts');
-  document.getElementById('productGrid').innerHTML = '<div class="loading" style="grid-column:1/-1"><div class="spinner"></div><div>सामान लोड हो रहा है...</div></div>';
-
-  try {
-    const [shopRes, prodRes] = await Promise.all([
-      fetch(`${API}/api/shops/${shopId}`),
-      fetch(`${API}/api/products/shop/${shopId}`)
-    ]);
-    state.selectedShop = await shopRes.json();
-    const products = await prodRes.json();
-
-    document.getElementById('shopDetailInfo').innerHTML = `
+  <div class="main">
+    <div class="top-bar2">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="font-size:40px">🏪</div>
-        <div>
-          <div style="font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;">${state.selectedShop.name}</div>
-          <div style="color:var(--ink-muted);font-size:14px;">📞 ${state.selectedShop.phone}</div>
-          ${state.selectedShop.upiId ? `<div style="color:var(--green-dark);font-size:13px;font-weight:600;">💳 UPI: ${state.selectedShop.upiId}</div>` : ''}
+        <button class="ham" onclick="toggleSidebar()">☰</button>
+        <div class="page-title" id="pageTitle">📊 Dashboard</div>
+      </div>
+      <button class="logout2" onclick="adminLogout()">Logout</button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="pgDash">
+        <div class="stats-row" id="dashStats">
+          <div class="stat2 s-yellow"><div class="stat2-icon">🏪</div><div class="stat2-num">—</div><div class="stat2-label">Total Shops</div></div>
+          <div class="stat2 s-green"><div class="stat2-icon">📦</div><div class="stat2-num">—</div><div class="stat2-label">Total Bookings</div></div>
+          <div class="stat2 s-blue"><div class="stat2-icon">📍</div><div class="stat2-num">—</div><div class="stat2-label">Active Locations</div></div>
+          <div class="stat2 s-purple"><div class="stat2-icon">⏳</div><div class="stat2-num">—</div><div class="stat2-label">Pending</div></div>
+          <div class="stat2 s-red"><div class="stat2-icon">👨‍💼</div><div class="stat2-num">—</div><div class="stat2-label">Sellers</div></div>
+          <div class="stat2 s-yellow"><div class="stat2-icon">✅</div><div class="stat2-num">—</div><div class="stat2-label">Active Today</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><span class="table-title">📦 Recent Bookings</span></div>
+          <div class="overflow-x"><table id="dashBookingsTable"><tbody><tr><td class="empty-row">Loading...</td></tr></tbody></table></div>
         </div>
       </div>
-    `;
 
-    renderProducts(products);
-  } catch(e) {
-    document.getElementById('productGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">😕</div><p>लोड नहीं हुआ</p></div>';
-  }
-}
-
-function renderProducts(products) {
-  const grid = document.getElementById('productGrid');
-  if (!products.length) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">📦</div><p>अभी कोई सामान उपलब्ध नहीं</p></div>';
-    return;
-  }
-  const emojis = {'चावल':'🌾','दाल':'🫘','आटा':'🌾','तेल':'🫙','नमक':'🧂','चीनी':'🍬','चाय':'🍵','साबुन':'🧼','शैम्पू':'🧴'};
-  grid.innerHTML = products.map(p => `
-    <div class="product-card">
-      <div class="product-emoji">${emojis[p.name] || '🛒'}</div>
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">₹${p.price}</div>
-      <div class="product-unit">प्रति ${p.unit}</div>
-      <button class="book-btn" onclick="startBooking('${p._id}','${p.name}',${p.price},'${p.unit}')">
-        📋 Book Now
-      </button>
-    </div>
-  `).join('');
-}
-
-function startBooking(productId, name, price, unit) {
-  state.selectedProduct = { _id: productId, name, price, unit };
-  state.quantity = 1;
-  document.getElementById('bookingProductTitle').textContent = `📋 ${name} बुक करें`;
-  document.getElementById('productSummary').innerHTML = `
-    <strong>${name}</strong> — ₹${price} / ${unit}
-  `;
-  document.getElementById('qtyDisplay').textContent = '1';
-  document.getElementById('unitLabel').textContent = unit;
-  showScreen('screenBook');
-}
-
-function changeQty(delta) {
-  state.quantity = Math.max(1, state.quantity + delta);
-  document.getElementById('qtyDisplay').textContent = state.quantity;
-}
-
-async function sendOTP() {
-  const name = document.getElementById('custName').value.trim();
-  const phone = document.getElementById('custPhone').value.trim();
-  if (!name) return showToast('⚠️ नाम दर्ज करें');
-  if (phone.length !== 10) return showToast('⚠️ 10 अंक का नंबर दर्ज करें');
-
-  state.customerName = name;
-  state.customerPhone = phone;
-
-  try {
-    const res = await fetch(`${API}/api/otp/send`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ phone })
-    });
-    const data = await res.json();
-    if (data.otp) {
-      document.getElementById('devOtpHint').style.display = 'block';
-      document.getElementById('devOtpHint').textContent = `🔧 Dev OTP: ${data.otp}`;
-    }
-    document.getElementById('otpSentTo').textContent = `OTP भेजा गया: +91 ${phone}`;
-    showScreen('screenOTP');
-    showToast('📱 OTP भेजा गया!');
-  } catch(e) {
-    showToast('❌ OTP भेजने में समस्या');
-  }
-}
-
-function otpInput(el, idx) {
-  el.value = el.value.slice(-1);
-  const boxes = document.querySelectorAll('.otp-box');
-  if (el.value && idx < 5) boxes[idx+1].focus();
-}
-
-async function verifyOTP() {
-  const boxes = document.querySelectorAll('.otp-box');
-  const otp = Array.from(boxes).map(b => b.value).join('');
-  if (otp.length !== 6) return showToast('⚠️ 6 अंक का OTP दर्ज करें');
-
-  try {
-    const res = await fetch(`${API}/api/otp/verify`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ phone: state.customerPhone, otp })
-    });
-    const data = await res.json();
-    if (!data.verified) return showToast('❌ गलत OTP');
-    confirmBooking();
-  } catch(e) {
-    showToast('❌ OTP सत्यापन विफल');
-  }
-}
-
-async function confirmBooking() {
-  try {
-    const res = await fetch(`${API}/api/bookings`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        shopId: state.selectedShop._id,
-        productId: state.selectedProduct._id,
-        quantity: state.quantity,
-        customerName: state.customerName,
-        phone: state.customerPhone
-      })
-    });
-    const data = await res.json();
-    if (!data.success) return showToast('❌ बुकिंग विफल: ' + data.error);
-    showSuccessScreen(data.booking);
-  } catch(e) {
-    showToast('❌ बुकिंग में समस्या');
-  }
-}
-
-function showSuccessScreen(booking) {
-  document.getElementById('successBookingId').textContent = booking.bookingId;
-  document.getElementById('successDetails').innerHTML = `
-    <div style="font-size:14px;line-height:2;">
-      <div>🛒 <strong>सामान:</strong> ${state.selectedProduct.name} × ${state.quantity}</div>
-      <div>💰 <strong>कुल:</strong> ₹${state.selectedProduct.price * state.quantity}</div>
-      <div>🏪 <strong>दुकान:</strong> ${state.selectedShop.name}</div>
-      <div>📞 <strong>दुकान फोन:</strong> ${state.selectedShop.phone}</div>
-    </div>
-  `;
-  if (state.selectedShop.upiId) {
-    document.getElementById('successUPI').innerHTML = `
-      <div class="upi-box">
-        <div class="upi-label">💳 UPI से भुगतान करें</div>
-        <div class="upi-id">${state.selectedShop.upiId}</div>
+      <!-- LOCATIONS -->
+      <div class="page" id="pgLocations">
+        <div class="add-form">
+          <div class="add-form-title">➕ नई Location जोड़ें</div>
+          <div class="form-row">
+            <div class="field-group"><label>Location का नाम</label><input type="text" id="locName" placeholder="जैसे: Agra" /></div>
+            <div class="field-group"><label>Type</label>
+              <select id="locType"><option value="city">City (शहर)</option><option value="town">Town (कस्बा)</option><option value="village">Village (गाँव)</option></select>
+            </div>
+          </div>
+          <button class="save-btn" onclick="addLocation()">➕ Add Location</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><span class="table-title">📍 सभी Locations</span><span id="locCount" class="badge badge-yellow">—</span></div>
+          <div class="overflow-x"><table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead><tbody id="locTable"></tbody></table></div>
+        </div>
       </div>
-    `;
-  }
 
-  // Countdown 45 min
-  let seconds = 45 * 60;
-  if (state.pickupInterval) clearInterval(state.pickupInterval);
-  state.pickupInterval = setInterval(() => {
-    seconds--;
-    const m = Math.floor(seconds/60).toString().padStart(2,'0');
-    const s = (seconds%60).toString().padStart(2,'0');
-    document.getElementById('pickupTimer').textContent = `${m}:${s}`;
-    if (seconds <= 0) clearInterval(state.pickupInterval);
-  }, 1000);
+      <!-- SHOPS -->
+      <div class="page" id="pgShops">
+        <div class="add-form">
+          <div class="add-form-title">➕ नई Shop जोड़ें</div>
+          <div class="form-row">
+            <div class="field-group"><label>Shop का नाम</label><input type="text" id="shopName" placeholder="Ram Kirana Store" /></div>
+            <div class="field-group"><label>Location</label><select id="shopLoc"><option value="">-- Select --</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="field-group"><label>Phone</label><input type="tel" id="shopPhone" placeholder="10 अंक" /></div>
+            <div class="field-group"><label>UPI ID (optional)</label><input type="text" id="shopUpi" placeholder="shop@upi" /></div>
+          </div>
+          <button class="save-btn" onclick="addShop()">➕ Add Shop</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><span class="table-title">🏪 सभी Shops</span><span id="shopCount" class="badge badge-yellow">—</span></div>
+          <div class="overflow-x"><table><thead><tr><th>Shop</th><th>Location</th><th>Phone</th><th>UPI</th><th>Status</th><th>Actions</th></tr></thead><tbody id="shopTable"></tbody></table></div>
+        </div>
+      </div>
 
-  showScreen('screenSuccess');
+      <!-- SELLERS -->
+      <div class="page" id="pgSellers">
+        <div class="add-form">
+          <div class="add-form-title">➕ नया Seller बनाएं</div>
+          <div class="form-row">
+            <div class="field-group"><label>नाम</label><input type="text" id="selName" placeholder="Seller Name" /></div>
+            <div class="field-group"><label>Email</label><input type="email" id="selEmail" placeholder="seller@email.com" /></div>
+          </div>
+          <div class="form-row">
+            <div class="field-group"><label>Phone</label><input type="tel" id="selPhone" placeholder="10 अंक" /></div>
+            <div class="field-group"><label>Password</label><input type="password" id="selPass" placeholder="••••••••" /></div>
+          </div>
+          <button class="save-btn" onclick="addSeller()">➕ Create Seller</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><span class="table-title">👨‍💼 सभी Sellers</span></div>
+          <div class="overflow-x"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Shop</th><th>Status</th><th>Actions</th></tr></thead><tbody id="sellerTable"></tbody></table></div>
+        </div>
+
+        <!-- Assign Shop Modal inline -->
+        <div id="assignShopPanel" style="display:none;" class="add-form">
+          <div class="add-form-title">🏪 Shop Assign करें</div>
+          <div class="form-row single">
+            <div class="field-group"><label>Shop चुनें</label><select id="assignShopSel"><option value="">-- Select Shop --</option></select></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="save-btn" onclick="doAssignShop()">✅ Assign</button>
+            <button class="save-btn" style="background:var(--admin3);color:var(--text-muted);" onclick="document.getElementById('assignShopPanel').style.display='none'">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Reset Password inline -->
+        <div id="resetPassPanel" style="display:none;" class="add-form">
+          <div class="add-form-title">🔑 Password Reset</div>
+          <div class="form-row single">
+            <div class="field-group"><label>नया Password</label><input type="password" id="newPassInput" placeholder="नया पासवर्ड" /></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="save-btn" onclick="doResetPass()">✅ Reset</button>
+            <button class="save-btn" style="background:var(--admin3);color:var(--text-muted);" onclick="document.getElementById('resetPassPanel').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div class="page" id="pgBookings">
+        <div class="filter-bar">
+          <select class="filter-select" id="bFilterStatus" onchange="loadBookings()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="ready">Ready</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <select class="filter-select" id="bFilterShop" onchange="loadBookings()">
+            <option value="">All Shops</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <div class="table-head"><span class="table-title">📦 सभी Bookings</span><span id="bookingCount" class="badge badge-yellow">—</span></div>
+          <div class="overflow-x"><table><thead><tr><th>ID</th><th>Customer</th><th>Phone</th><th>Shop</th><th>Product</th><th>Qty</th><th>Trust</th><th>Status</th><th>Expires</th><th>Action</th></tr></thead><tbody id="bookingTable"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- TRUST -->
+      <div class="page" id="pgTrust">
+        <div class="table-wrap">
+          <div class="table-head"><span class="table-title">⭐ Customer Trust Scores</span></div>
+          <div class="overflow-x"><table><thead><tr><th>Customer</th><th>Phone</th><th>Score</th><th>Bookings</th><th>Completed</th><th>No-shows</th><th>Action</th></tr></thead><tbody id="trustTable"></tbody></table></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast2" id="toast2"></div>
+
+<script>
+const API = '/api';
+let adminToken = sessionStorage.getItem('adminToken');
+let selectedSellerId = null;
+let allShops = [];
+
+if (adminToken) initAdmin();
+
+async function adminLogin() {
+  const u = document.getElementById('adminUser').value.trim();
+  const p = document.getElementById('adminPass').value;
+  if (!u||!p) return toast('⚠️ सभी fields भरें');
+  try {
+    const res = await post('/auth/admin/login',{username:u,password:p});
+    if (res.error) return toast('❌ '+res.error);
+    sessionStorage.setItem('adminToken', res.token);
+    adminToken = res.token;
+    initAdmin();
+  } catch(e){ toast('❌ Login failed'); }
 }
 
-function goHome() {
-  state.screenHistory = ['screenArea'];
-  showScreen('screenArea', true);
-  document.getElementById('locationSelect').value = '';
+function adminLogout() {
+  sessionStorage.removeItem('adminToken');
+  location.reload();
 }
 
-// ─── NAVIGATION ───
-function showScreen(id, reset=false) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (!reset) state.screenHistory.push(id);
-
-  const backBtn = document.getElementById('backBtn');
-  backBtn.style.display = state.screenHistory.length > 1 ? 'block' : 'none';
-  window.scrollTo(0,0);
+async function initAdmin() {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('adminApp').style.display = 'block';
+  loadDashboard();
+  loadShopsForFilters();
 }
 
-function goBack() {
-  if (state.screenHistory.length <= 1) return;
-  state.screenHistory.pop();
-  const prev = state.screenHistory[state.screenHistory.length-1];
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(prev).classList.add('active');
-  document.getElementById('backBtn').style.display = state.screenHistory.length > 1 ? 'block' : 'none';
+// ── DASHBOARD ──
+async function loadDashboard() {
+  try {
+    const stats = await aGet('/admin/stats');
+    const nums = document.querySelectorAll('.stat2-num');
+    nums[0].textContent = stats.totalShops;
+    nums[1].textContent = stats.totalBookings;
+    nums[2].textContent = stats.activeLocations;
+    nums[3].textContent = stats.pendingBookings;
+    nums[4].textContent = stats.sellers;
+    nums[5].textContent = stats.pendingBookings;
+
+    const bookings = await aGet('/bookings/admin/all?limit=10');
+    const tbody = document.querySelector('#dashBookingsTable tbody');
+    tbody.innerHTML = bookings.slice(0,8).map(b=>`
+      <tr>
+        <td><span style="font-family:'Baloo 2',cursive;font-weight:700;color:var(--accent)">${b.bookingId}</span></td>
+        <td>${b.customerName}</td>
+        <td>${b.phone}</td>
+        <td>${b.shopId?.name||'—'}</td>
+        <td>${statusBadge(b.status)}</td>
+      </tr>`).join('') || '<tr><td colspan="5" class="empty-row">No bookings</td></tr>';
+  } catch(e){ console.error(e); }
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+// ── LOCATIONS ──
+async function loadLocations() {
+  try {
+    const locs = await aGet('/locations/all');
+    document.getElementById('locCount').textContent = locs.length;
+    document.getElementById('locTable').innerHTML = locs.map(l=>`
+      <tr>
+        <td style="font-weight:600">${l.name}</td>
+        <td>${typeBadge(l.type)}</td>
+        <td>${l.isActive?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Inactive</span>'}</td>
+        <td class="actions-cell">
+          <button class="action-btn ${l.isActive?'ab-block':'ab-green'}" onclick="toggleLocation('${l._id}',${!l.isActive})">${l.isActive?'Deactivate':'Activate'}</button>
+          <button class="action-btn ab-del" onclick="deleteLocation('${l._id}')">🗑️ Delete</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="4" class="empty-row">No locations</td></tr>';
+
+    // Populate shop location dropdown
+    const shopLocSel = document.getElementById('shopLoc');
+    shopLocSel.innerHTML = '<option value="">-- Select --</option>' + locs.filter(l=>l.isActive).map(l=>`<option value="${l._id}">${l.name}</option>`).join('');
+  } catch(e){ toast('❌ Locations load failed'); }
+}
+
+async function addLocation() {
+  const name=document.getElementById('locName').value.trim();
+  const type=document.getElementById('locType').value;
+  if (!name) return toast('⚠️ नाम दर्ज करें');
+  try {
+    await aPost('/locations',{name,type});
+    toast('✅ Location जोड़ी गई!');
+    document.getElementById('locName').value='';
+    loadLocations();
+  } catch(e){ toast('❌ Failed'); }
+}
+
+async function toggleLocation(id, val) {
+  await aPut(`/locations/${id}`,{isActive:val});
+  toast('✅ Updated'); loadLocations();
+}
+
+async function deleteLocation(id) {
+  if (!confirm('Delete this location?')) return;
+  await aDel(`/locations/${id}`);
+  toast('🗑️ Deleted'); loadLocations();
+}
+
+// ── SHOPS ──
+async function loadShops() {
+  try {
+    const shops = await aGet('/shops');
+    allShops = shops;
+    document.getElementById('shopCount').textContent = shops.length;
+    document.getElementById('shopTable').innerHTML = shops.map(s=>`
+      <tr>
+        <td style="font-weight:600">${s.name}</td>
+        <td>${s.locationId?.name||'—'}</td>
+        <td>${s.phone}</td>
+        <td>${s.upiId||'—'}</td>
+        <td>${s.isActive?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Inactive</span>'}</td>
+        <td class="actions-cell">
+          <button class="action-btn ${s.isActive?'ab-block':'ab-green'}" onclick="toggleShop('${s._id}',${!s.isActive})">${s.isActive?'Deactivate':'Activate'}</button>
+          <button class="action-btn ab-del" onclick="deleteShop('${s._id}')">🗑️</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="6" class="empty-row">No shops</td></tr>';
+  } catch(e){ toast('❌ Shops load failed'); }
+}
+
+async function addShop() {
+  const name=document.getElementById('shopName').value.trim();
+  const locationId=document.getElementById('shopLoc').value;
+  const phone=document.getElementById('shopPhone').value.trim();
+  const upiId=document.getElementById('shopUpi').value.trim();
+  if (!name||!locationId||!phone) return toast('⚠️ नाम, location, phone जरूरी है');
+  try {
+    await aPost('/shops',{name,locationId,phone,upiId});
+    toast('✅ Shop जोड़ी गई!');
+    ['shopName','shopPhone','shopUpi'].forEach(id=>document.getElementById(id).value='');
+    loadShops();
+  } catch(e){ toast('❌ Failed'); }
+}
+
+async function toggleShop(id,val) {
+  await aPut(`/shops/${id}`,{isActive:val});
+  toast('✅ Updated'); loadShops();
+}
+
+async function deleteShop(id) {
+  if (!confirm('Delete this shop?')) return;
+  await aDel(`/shops/${id}`);
+  toast('🗑️ Deleted'); loadShops();
+}
+
+async function loadShopsForFilters() {
+  try {
+    const shops = await aGet('/shops');
+    allShops = shops;
+    const sel = document.getElementById('bFilterShop');
+    sel.innerHTML = '<option value="">All Shops</option>' + shops.map(s=>`<option value="${s._id}">${s.name}</option>`).join('');
+    const assignSel = document.getElementById('assignShopSel');
+    assignSel.innerHTML = '<option value="">-- Select Shop --</option>' + shops.map(s=>`<option value="${s._id}">${s.name}</option>`).join('');
+  } catch(e){}
+}
+
+// ── SELLERS ──
+async function loadSellers() {
+  try {
+    const sellers = await aGet('/admin/sellers');
+    document.getElementById('sellerTable').innerHTML = sellers.map(s=>`
+      <tr>
+        <td style="font-weight:600">${s.name}</td>
+        <td>${s.email}</td>
+        <td>${s.phone}</td>
+        <td>${s.shopId?.name||'<span style="color:var(--text-muted)">Not assigned</span>'}</td>
+        <td>${s.isBlocked?'<span class="badge badge-red">Blocked</span>':'<span class="badge badge-green">Active</span>'}</td>
+        <td class="actions-cell">
+          <button class="action-btn ${s.isBlocked?'ab-green':'ab-block'}" onclick="toggleBlock('${s._id}')">${s.isBlocked?'Unblock':'Block'}</button>
+          <button class="action-btn ab-edit" onclick="showAssignShop('${s._id}')">Assign Shop</button>
+          <button class="action-btn ab-gray" onclick="showResetPass('${s._id}')">Reset Pass</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="6" class="empty-row">No sellers</td></tr>';
+  } catch(e){ toast('❌ Sellers load failed'); }
+}
+
+async function addSeller() {
+  const name=document.getElementById('selName').value.trim();
+  const email=document.getElementById('selEmail').value.trim();
+  const phone=document.getElementById('selPhone').value.trim();
+  const password=document.getElementById('selPass').value;
+  if (!name||!email||!phone||!password) return toast('⚠️ सभी fields भरें');
+  try {
+    await aPost('/admin/sellers',{name,email,phone,password});
+    toast('✅ Seller created!');
+    ['selName','selEmail','selPhone','selPass'].forEach(id=>document.getElementById(id).value='');
+    loadSellers();
+  } catch(e){ toast('❌ Failed'); }
+}
+
+async function toggleBlock(id) {
+  await aPut(`/admin/sellers/${id}/block`,{});
+  toast('✅ Updated'); loadSellers();
+}
+
+function showAssignShop(sellerId) {
+  selectedSellerId = sellerId;
+  document.getElementById('assignShopPanel').style.display='block';
+  document.getElementById('resetPassPanel').style.display='none';
+  document.getElementById('assignShopPanel').scrollIntoView({behavior:'smooth'});
+}
+
+async function doAssignShop() {
+  const shopId = document.getElementById('assignShopSel').value;
+  await aPut(`/admin/sellers/${selectedSellerId}/assign-shop`,{shopId});
+  toast('✅ Shop assigned!');
+  document.getElementById('assignShopPanel').style.display='none';
+  loadSellers();
+}
+
+function showResetPass(sellerId) {
+  selectedSellerId = sellerId;
+  document.getElementById('resetPassPanel').style.display='block';
+  document.getElementById('assignShopPanel').style.display='none';
+  document.getElementById('resetPassPanel').scrollIntoView({behavior:'smooth'});
+}
+
+async function doResetPass() {
+  const pass = document.getElementById('newPassInput').value;
+  if (!pass) return toast('⚠️ Password दर्ज करें');
+  await aPut(`/admin/sellers/${selectedSellerId}/reset-password`,{newPassword:pass});
+  toast('✅ Password reset!');
+  document.getElementById('resetPassPanel').style.display='none';
+}
+
+// ── BOOKINGS ──
+async function loadBookings() {
+  const status = document.getElementById('bFilterStatus').value;
+  const shopId = document.getElementById('bFilterShop').value;
+  let url = '/bookings/admin/all?';
+  if (status) url += `status=${status}&`;
+  if (shopId) url += `shopId=${shopId}`;
+  try {
+    const bookings = await aGet(url);
+    document.getElementById('bookingCount').textContent = bookings.length;
+    document.getElementById('bookingTable').innerHTML = bookings.map(b=>{
+      const mins = Math.max(0,Math.floor((new Date(b.expiresAt)-Date.now())/60000));
+      return `<tr>
+        <td><span style="font-family:'Baloo 2',cursive;font-weight:700;color:var(--accent);font-size:12px">${b.bookingId}</span></td>
+        <td>${b.customerName}</td>
+        <td>${b.phone}</td>
+        <td>${b.shopId?.name||'—'}</td>
+        <td>${b.productId?.name||'—'}</td>
+        <td>${b.quantity}</td>
+        <td><span style="color:var(--accent)">⭐${b.trustScoreSnapshot||5}</span></td>
+        <td>${statusBadge(b.status)}</td>
+        <td style="color:${mins<10?'var(--red)':'var(--text-muted)'};font-size:13px">${mins}m</td>
+        <td>${b.status!=='cancelled'&&b.status!=='completed'?`<button class="action-btn ab-del" onclick="cancelBooking('${b._id}')">Cancel</button>`:'—'}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="10" class="empty-row">No bookings</td></tr>';
+  } catch(e){ toast('❌ Bookings load failed'); }
+}
+
+async function cancelBooking(id) {
+  if (!confirm('Force cancel this booking?')) return;
+  await aPut(`/bookings/${id}/cancel`,{});
+  toast('✅ Cancelled'); loadBookings();
+}
+
+// ── TRUST ──
+async function loadTrust() {
+  try {
+    const trust = await aGet('/admin/trust');
+    document.getElementById('trustTable').innerHTML = trust.map(t=>`
+      <tr>
+        <td style="font-weight:600">${t.customerName||'—'}</td>
+        <td>${t.phone}</td>
+        <td>
+          <span style="font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:${t.score>=7?'var(--green)':t.score>=4?'var(--accent)':'var(--red)'}">${t.score}</span>
+          <span style="color:var(--accent);font-size:12px"> ${'⭐'.repeat(Math.min(5,Math.max(1,Math.round(t.score/2))))}</span>
+        </td>
+        <td>${t.totalBookings}</td>
+        <td><span class="badge badge-green">${t.completedBookings}</span></td>
+        <td><span class="badge badge-red">${t.noShows}</span></td>
+        <td><button class="action-btn ab-edit" onclick="resetTrust('${t._id}')">🔄 Reset</button></td>
+      </tr>`).join('') || '<tr><td colspan="7" class="empty-row">No data</td></tr>';
+  } catch(e){ toast('❌ Trust load failed'); }
+}
+
+async function resetTrust(id) {
+  if (!confirm('Reset trust score to 5?')) return;
+  await aPut(`/admin/trust/${id}/reset`,{});
+  toast('✅ Reset!'); loadTrust();
+}
+
+// ── NAVIGATION ──
+function showPage(pageId, title, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pageTitle').textContent = title;
+  closeSidebar();
+  if (pageId==='pgDash') loadDashboard();
+  if (pageId==='pgLocations') loadLocations();
+  if (pageId==='pgShops') { loadLocations(); loadShops(); }
+  if (pageId==='pgSellers') { loadSellers(); loadShopsForFilters(); }
+  if (pageId==='pgBookings') loadBookings();
+  if (pageId==='pgTrust') loadTrust();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── HELPERS ──
+function statusBadge(s) {
+  const map={pending:'badge-yellow',ready:'badge-green',completed:'badge-blue',cancelled:'badge-red'};
+  const label={pending:'⏳ Pending',ready:'✅ Ready',completed:'🏆 Done',cancelled:'❌ Cancelled'};
+  return `<span class="badge ${map[s]||'badge-gray'}">${label[s]||s}</span>`;
+}
+function typeBadge(t) {
+  const map={city:'badge-blue',town:'badge-green',village:'badge-yellow'};
+  const label={city:'🏙️ City',town:'🏘️ Town',village:'🌾 Village'};
+  return `<span class="badge ${map[t]||'badge-gray'}">${label[t]||t}</span>`;
+}
+
+async function aGet(url){ const r=await fetch(API+url,{headers:{Authorization:'Bearer '+adminToken}}); return r.json(); }
+async function aPost(url,body){ const r=await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify(body)}); return r.json(); }
+async function aPut(url,body){ const r=await fetch(API+url,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify(body)}); return r.json(); }
+async function aDel(url){ const r=await fetch(API+url,{method:'DELETE',headers:{Authorization:'Bearer '+adminToken}}); return r.json(); }
+async function post(url,body){ const r=await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); return r.json(); }
+
+function toast(msg) {
+  const t=document.getElementById('toast2');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 </script>
 </body>
