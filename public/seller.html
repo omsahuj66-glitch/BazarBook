@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seller — BazaarBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--p:#1B5E20;--p2:#2E7D32;--p3:#43A047;--pg:rgba(27,94,32,0.1);--acc:#FF6D00;--bg:#F1F8E9;--card:#fff;--ink:#1a1a1a;--muted:#777;--border:#C8E6C9;--radius:14px;--shadow:0 3px 16px rgba(0,0,0,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--ink);}
+
+/* AUTH */
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1B5E20,#2E7D32);}
+.auth-card{background:#fff;border-radius:20px;padding:30px 24px;width:100%;max-width:380px;box-shadow:0 16px 48px rgba(0,0,0,0.2);}
+.auth-logo{font-family:'Baloo 2',cursive;font-size:24px;font-weight:800;color:var(--p);text-align:center;margin-bottom:4px;}
+.auth-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:24px;}
+.tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:20px;}
+.tab{flex:1;padding:9px;border:none;border-radius:7px;font-family:'Baloo 2',cursive;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.2s;}
+.tab.on{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(27,94,32,0.3);}
+.inp{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:15px;outline:none;margin-bottom:10px;transition:border-color 0.2s;background:#fff;color:var(--ink);}
+.inp:focus{border-color:var(--p);}
+.inp option{background:#fff;}
+.sbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--p),var(--p2));border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px;transition:all 0.2s;}
+.sbtn:active{transform:scale(0.98);}
+
+/* APP */
+#app{display:none;}
+.topbar{background:linear-gradient(90deg,var(--p),var(--p2));color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(27,94,32,0.3);}
+.topbar-title{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;}
+.lout{background:rgba(255,255,255,0.15);border:none;color:#fff;padding:7px 12px;border-radius:7px;font-size:12px;cursor:pointer;}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--border);display:flex;z-index:100;box-shadow:0 -3px 12px rgba(0,0,0,0.06);}
+.ni{flex:1;padding:10px 4px 7px;text-align:center;cursor:pointer;border:none;background:none;transition:all 0.2s;}
+.ni .icon{font-size:22px;display:block;}
+.ni .label{font-size:10px;font-weight:600;color:var(--muted);margin-top:1px;display:block;}
+.ni.on .label{color:var(--p);}
+
+/* SCREENS */
+.scr{display:none;padding:16px 16px 90px;}
+.scr.on{display:block;}
+
+/* DASHBOARD */
+.welcome-card{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+.wc-name{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;}
+.wc-shop{font-size:14px;opacity:0.9;margin-top:4px;}
+.stats2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+.sc{background:#fff;border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);text-align:center;border:1px solid var(--border);}
+.sc-icon{font-size:26px;margin-bottom:4px;}
+.sc-num{font-family:'Baloo 2',cursive;font-size:24px;font-weight:800;color:var(--p);}
+.sc-label{font-size:11px;color:var(--muted);}
+
+/* SECTION */
+.stitle{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;margin-bottom:10px;}
+
+/* BOOKING CARD */
+.bcard{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.bcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.bid{font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;color:var(--p);}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.b-pending{background:#FFF8E1;color:#F57F17;}
+.b-packing{background:#E3F2FD;color:#1565C0;}
+.b-ready{background:#E8F5E9;color:var(--p);}
+.b-completed{background:#EDE7F6;color:#4527A0;}
+.b-cancelled{background:#FFEBEE;color:#B71C1C;}
+.brow{font-size:13px;color:#555;margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+.trust{color:#F57F17;font-size:13px;}
+.timer{font-family:'Baloo 2',cursive;font-weight:700;color:var(--acc);}
+.bactions{display:flex;gap:8px;margin-top:10px;}
+.abtn{flex:1;padding:8px;border:none;border-radius:8px;font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;}
+.ab-pack{background:#E3F2FD;color:#1565C0;}
+.ab-ready{background:#E8F5E9;color:var(--p);}
+.ab-done{background:#EDE7F6;color:#4527A0;}
+
+/* PRODUCT */
+.pcard{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.picon{width:46px;height:46px;background:var(--pg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.pinfo{flex:1;}
+.pname{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;}
+.pmeta{font-size:12px;color:var(--muted);}
+.pprice{font-size:15px;font-weight:700;color:var(--acc);}
+.pbtns{display:flex;flex-direction:column;gap:5px;}
+.ibt{width:32px;height:32px;border-radius:7px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.ebt{background:#E8F5E9;} .dbt{background:#FFEBEE;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-height:88vh;overflow-y:auto;animation:up2 0.3s ease;}
+@keyframes up2{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mtitle{font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;margin-bottom:16px;}
+.mclos{float:right;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;margin-top:-4px;}
+.sel{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:15px;color:var(--ink);background:#fff;outline:none;margin-bottom:10px;appearance:none;}
+.sel:focus{border-color:var(--p);}
+
+/* SHOP SETUP */
+.setup-card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:14px;}
+.setup-title{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;color:var(--p);margin-bottom:14px;}
+.fab{position:fixed;bottom:76px;right:18px;width:54px;height:54px;background:linear-gradient(135deg,var(--p),var(--p2));border:none;border-radius:50%;color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 16px rgba(27,94,32,0.4);display:none;align-items:center;justify-content:center;z-index:50;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:40px;font-size:14px;opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);}
+.pending-notice{background:#FFF8E1;border:2px solid #FFC107;border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:14px;color:#E65100;}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="authWrap" class="auth">
+<div class="auth-card">
+  <div class="auth-logo">🏪 Seller Panel</div>
+  <div class="auth-sub">BazaarBook — अपनी दुकान शुरू करें</div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('login')">Login</button>
+    <button class="tab" onclick="switchTab('register')">Register</button>
+  </div>
+  <div id="loginForm">
+    <input class="inp" type="email" id="lEmail" placeholder="Email"/>
+    <input class="inp" type="password" id="lPass" placeholder="Password"/>
+    <button class="sbtn" onclick="doLogin()">🔓 Login करें</button>
+  </div>
+  <div id="regForm" style="display:none">
+    <input class="inp" type="text" id="rName" placeholder="आपका नाम *"/>
+    <input class="inp" type="email" id="rEmail" placeholder="Email *"/>
+    <input class="inp" type="tel" id="rPhone" placeholder="Mobile नंबर *" maxlength="10"/>
+    <input class="inp" type="password" id="rPass" placeholder="Password *"/>
+    <button class="sbtn" onclick="doReg()">✅ Register करें</button>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-title" id="ttitle">📊 Dashboard</div>
+    <button class="lout" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="scr on" id="sDash">
+    <div class="welcome-card">
+      <div class="wc-name" id="wcName">नमस्ते 👋</div>
+      <div class="wc-shop" id="wcShop">आपकी दुकान लोड हो रही है...</div>
+    </div>
+    <div id="pendingNotice"></div>
+    <div class="stats2" id="dashStats">
+      <div class="sc"><div class="sc-icon">⏳</div><div class="sc-num">—</div><div class="sc-label">Pending</div></div>
+      <div class="sc"><div class="sc-icon">📦</div><div class="sc-icon">📦</div><div class="sc-num">—</div><div class="sc-label">Packing</div></div>
+      <div class="sc"><div class="sc-icon">✅</div><div class="sc-num">—</div><div class="sc-label">Ready</div></div>
+      <div class="sc"><div class="sc-icon">🏆</div><div class="sc-num">—</div><div class="sc-label">Completed</div></div>
+    </div>
+    <div class="stitle">🔔 नई बुकिंग</div>
+    <div id="newBookings"></div>
+  </div>
+
+  <!-- SHOP SETUP -->
+  <div class="scr" id="sShopSetup">
+    <div id="shopSetupContent"></div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="scr" id="sProds">
+    <div class="stitle">🛒 मेरे उत्पाद</div>
+    <div id="prodList"></div>
+  </div>
+  <button class="fab" id="fab" onclick="openAddProd()">+</button>
+
+  <!-- ALL BOOKINGS -->
+  <div class="scr" id="sBooks">
+    <div class="stitle">📋 सभी बुकिंग</div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;">
+      <button class="abtn ab-pack" style="flex:none;padding:7px 14px" onclick="filterB('all')">सभी</button>
+      <button class="abtn" style="flex:none;padding:7px 14px;background:#FFF8E1;color:#F57F17" onclick="filterB('pending')">Pending</button>
+      <button class="abtn ab-pack" style="flex:none;padding:7px 14px" onclick="filterB('packing')">Packing</button>
+      <button class="abtn ab-ready" style="flex:none;padding:7px 14px" onclick="filterB('ready')">Ready</button>
+      <button class="abtn ab-done" style="flex:none;padding:7px 14px" onclick="filterB('completed')">Done</button>
+    </div>
+    <div id="allBookings"></div>
+  </div>
+
+  <div class="bnav">
+    <button class="ni on" onclick="sw('sDash','📊 Dashboard',this)"><span class="icon">📊</span><span class="label">Dashboard</span></button>
+    <button class="ni" onclick="sw('sShopSetup','🏪 Shop',this)"><span class="icon">🏪</span><span class="label">My Shop</span></button>
+    <button class="ni" onclick="sw('sProds','🛒 Products',this)"><span class="icon">🛒</span><span class="label">Products</span></button>
+    <button class="ni" onclick="sw('sBooks','📋 Bookings',this)"><span class="icon">📋</span><span class="label">Bookings</span></button>
+  </div>
+</div>
+
+<!-- ADD/EDIT PRODUCT MODAL -->
+<div class="modal-bg" id="prodModal">
+<div class="modal">
+  <button class="mclos" onclick="closeProdModal()">✕</button>
+  <div class="mtitle" id="prodModalTitle">➕ नया उत्पाद</div>
+  <input class="inp" id="pN" placeholder="उत्पाद का नाम (जैसे: चावल) *"/>
+  <input class="inp" id="pP" type="number" placeholder="कीमत ₹ *"/>
+  <input class="inp" id="pOP" type="number" placeholder="MRP / Original Price (optional)"/>
+  <input class="inp" id="pSt" type="number" placeholder="स्टॉक"/>
+  <select class="sel" id="pU">
+    <option value="kg">Kilogram (kg)</option>
+    <option value="piece">Piece (नग)</option>
+    <option value="litre">Litre (लीटर)</option>
+    <option value="packet">Packet (पैकेट)</option>
+    <option value="dozen">Dozen (दर्जन)</option>
+    <option value="gram">Gram (ग्राम)</option>
+  </select>
+  <select class="sel" id="pC">
+    <option>General</option><option>Grocery</option><option>Dairy</option>
+    <option>Vegetables</option><option>Sweets</option><option>Medicine</option><option>Stationery</option>
+  </select>
+  <input class="inp" id="pD" placeholder="Description (optional)"/>
+  <button class="sbtn" onclick="saveProd()">💾 Save करें</button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API='/api';
+let tok=localStorage.getItem('sellerTok');
+let sd=JSON.parse(localStorage.getItem('sellerSD')||'{}');
+let allBks=[],editProd=null;
+
+if(tok)init();
+
+function switchTab(t){
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
+  document.getElementById('regForm').style.display=t==='register'?'block':'none';
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',(t==='login'&&i===0)||(t==='register'&&i===1)));
+}
+
+async function doLogin(){
+  const email=document.getElementById('lEmail').value.trim();
+  const pass=document.getElementById('lPass').value;
+  if(!email||!pass)return toast('⚠️ Email & password dalen');
+  try{
+    const r=await post('/auth/seller/login',{email,password:pass});
+    if(r.error)return toast('❌ '+r.error);
+    save(r);
+  }catch(e){toast('❌ Login failed');}
+}
+
+async function doReg(){
+  const name=document.getElementById('rName').value.trim();
+  const email=document.getElementById('rEmail').value.trim();
+  const phone=document.getElementById('rPhone').value.trim();
+  const pass=document.getElementById('rPass').value;
+  if(!name||!email||!phone||!pass)return toast('⚠️ Sab fields bharen');
+  if(phone.length!==10)return toast('⚠️ 10 digit phone number');
+  try{
+    const r=await post('/auth/seller/register',{name,email,phone,password:pass});
+    if(r.error)return toast('❌ '+r.error);
+    save(r);
+  }catch(e){toast('❌ Registration failed');}
+}
+
+function save(r){
+  localStorage.setItem('sellerTok',r.token);
+  localStorage.setItem('sellerSD',JSON.stringify(r.seller));
+  tok=r.token;sd=r.seller;
+  init();
+}
+
+function logout(){localStorage.clear();location.reload();}
+
+async function init(){
+  document.getElementById('authWrap').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('wcName').textContent=`नमस्ते, ${sd.name}! 👋`;
+  loadDash();
+}
+
+async function loadDash(){
+  // Shop check
+  try{
+    if(sd.shopId){
+      const shop=await get(`/shops/${sd.shopId}`);
+      document.getElementById('wcShop').textContent=`🏪 ${shop.name}`;
+      if(!shop.isApproved){
+        document.getElementById('pendingNotice').innerHTML=`<div class="pending-notice">⏳ आपकी shop admin approval के लिए pending है। जल्द approve होगी!</div>`;
+      }
+    } else {
+      document.getElementById('wcShop').textContent='⚠️ Shop setup नहीं हुई';
+    }
+  }catch(e){}
+
+  // Bookings stats
+  try{
+    const bks=await aGet('/bookings/seller/mine');
+    allBks=bks;
+    const nums=document.querySelectorAll('.sc-num');
+    nums[0].textContent=bks.filter(b=>b.status==='pending').length;
+    nums[1].textContent=bks.filter(b=>b.status==='packing').length;
+    nums[2].textContent=bks.filter(b=>b.status==='ready').length;
+    nums[3].textContent=bks.filter(b=>b.status==='completed').length;
+    const newB=bks.filter(b=>['pending','packing'].includes(b.status)).slice(0,5);
+    document.getElementById('newBookings').innerHTML=newB.length?newB.map(b=>bCard(b,false)).join(''):'<div class="empty">📭 कोई नई बुकिंग नहीं</div>';
+  }catch(e){}
+}
+
+async function loadShopSetup(){
+  const cont=document.getElementById('shopSetupContent');
+  try{
+    if(sd.shopId){
+      const shop=await get(`/shops/${sd.shopId}`);
+      const locs=await get('/locations');
+      cont.innerHTML=`
+        <div class="setup-card">
+          <div class="setup-title">🏪 मेरी Shop</div>
+          ${!shop.isApproved?'<div class="pending-notice" style="margin-bottom:14px">⏳ Admin approval pending</div>':'<div style="color:var(--p);font-weight:600;margin-bottom:12px">✅ Shop approved & active!</div>'}
+          <input class="inp" id="sName" value="${shop.name}" placeholder="Shop Name"/>
+          <select class="sel" id="sLoc">${locs.map(l=>`<option value="${l._id}"${l._id===shop.locationId?._id?'selected':''}>${l.name}</option>`).join('')}</select>
+          <input class="inp" id="sPhone" value="${shop.phone}" placeholder="Phone"/>
+          <input class="inp" id="sUPI" value="${shop.upiId||''}" placeholder="UPI ID (optional)"/>
+          <select class="sel" id="sCat">
+            ${['General','Grocery','Dairy','Vegetables','Sweets','Medicine','Stationery','Electronics'].map(c=>`<option${c===shop.category?' selected':''}>${c}</option>`).join('')}
+          </select>
+          <input class="inp" id="sDesc" value="${shop.description||''}" placeholder="Description (optional)"/>
+          <button class="sbtn" onclick="updateShop()">💾 Update Shop</button>
+        </div>`;
+    } else {
+      const locs=await get('/locations');
+      cont.innerHTML=`
+        <div class="setup-card">
+          <div class="setup-title">🏪 अपनी Shop बनाएं</div>
+          <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Shop बनाने के बाद admin approve करेगा, फिर customers देख पाएंगे।</p>
+          <input class="inp" id="sName" placeholder="Shop का नाम *"/>
+          <select class="sel" id="sLoc"><option value="">-- Location चुनें --</option>${locs.map(l=>`<option value="${l._id}">${l.name} (${l.type})</option>`).join('')}</select>
+          <input class="inp" id="sPhone" placeholder="Phone Number *"/>
+          <input class="inp" id="sUPI" placeholder="UPI ID (optional) — जैसे: shop@paytm"/>
+          <select class="sel" id="sCat">
+            ${['General','Grocery','Dairy','Vegetables','Sweets','Medicine','Stationery'].map(c=>`<option>${c}</option>`).join('')}
+          </select>
+          <input class="inp" id="sDesc" placeholder="Shop का description"/>
+          <button class="sbtn" onclick="createShop()">🏪 Shop बनाएं</button>
+        </div>`;
+    }
+  }catch(e){cont.innerHTML='<div class="empty">Load failed</div>';}
+}
+
+async function createShop(){
+  const name=document.getElementById('sName').value.trim();
+  const locationId=document.getElementById('sLoc').value;
+  const phone=document.getElementById('sPhone').value.trim();
+  const upiId=document.getElementById('sUPI').value.trim();
+  const category=document.getElementById('sCat').value;
+  const description=document.getElementById('sDesc').value.trim();
+  if(!name||!locationId||!phone)return toast('⚠️ नाम, location, phone जरूरी है');
+  try{
+    const r=await aPut('/shops/seller/create',{name,locationId,phone,upiId,category,description},'POST');
+    if(r.error)return toast('❌ '+r.error);
+    sd.shopId=r._id;localStorage.setItem('sellerSD',JSON.stringify(sd));
+    toast('✅ Shop बनाई गई! Approval pending...');
+    document.getElementById('fab').style.display='flex';
+    loadShopSetup();loadDash();
+  }catch(e){toast('❌ Failed: '+e.message);}
+}
+
+async function updateShop(){
+  const name=document.getElementById('sName').value.trim();
+  const locationId=document.getElementById('sLoc').value;
+  const phone=document.getElementById('sPhone').value.trim();
+  const upiId=document.getElementById('sUPI').value.trim();
+  const category=document.getElementById('sCat').value;
+  const description=document.getElementById('sDesc').value.trim();
+  try{
+    await aPut('/shops/seller/update',{name,locationId,phone,upiId,category,description},'PUT');
+    toast('✅ Shop updated!');
+  }catch(e){toast('❌ Update failed');}
+}
+
+async function loadProds(){
+  if(!sd.shopId){document.getElementById('prodList').innerHTML='<div class="empty">🏪 पहले shop setup करें</div>';return;}
+  try{
+    const prods=await get(`/products/shop/${sd.shopId}`);
+    document.getElementById('prodList').innerHTML=prods.length
+      ?prods.map(p=>`
+        <div class="pcard">
+          <div class="picon">🛒</div>
+          <div class="pinfo">
+            <div class="pname">${p.name}</div>
+            <div class="pmeta">Stock: ${p.stock} ${p.unit} | ${p.category}</div>
+            <div class="pprice">₹${p.price}</div>
+          </div>
+          <div class="pbtns">
+            <button class="ibt ebt" onclick='editProdFn(${JSON.stringify(p)})'>✏️</button>
+            <button class="ibt dbt" onclick="delProd('${p._id}')">🗑️</button>
+          </div>
+        </div>`).join('')
+      :'<div class="empty">📦 कोई उत्पाद नहीं — + से जोड़ें</div>';
+  }catch(e){toast('❌ Load failed');}
+}
+
+async function loadAllBookings(){
+  try{
+    const bks=await aGet('/bookings/seller/mine');
+    allBks=bks;renderBks(bks);
+  }catch(e){}
+}
+
+function filterB(s){renderBks(s==='all'?allBks:allBks.filter(b=>b.status===s));}
+
+function renderBks(bks){
+  document.getElementById('allBookings').innerHTML=bks.length?bks.map(b=>bCard(b,true)).join(''):'<div class="empty">📭 कोई बुकिंग नहीं</div>';
+}
+
+function bCard(b,actions){
+  const stars='⭐'.repeat(Math.min(5,Math.max(1,Math.round((b.trustScoreSnapshot||5)/2))));
+  const mins=Math.max(0,Math.floor((new Date(b.expiresAt)-Date.now())/60000));
+  const sl={pending:'b-pending',packing:'b-packing',ready:'b-ready',completed:'b-completed',cancelled:'b-cancelled'};
+  const tl={pending:'⏳ Pending',packing:'📦 Packing',ready:'✅ Ready',completed:'🏆 Done',cancelled:'❌ Cancelled'};
+  return `<div class="bcard">
+    <div class="bcard-top"><span class="bid">${b.bookingId}</span><span class="badge ${sl[b.status]}">${tl[b.status]}</span></div>
+    <div class="brow">👤 ${b.customerName} | 📞 ${b.phone}</div>
+    <div class="brow"><span class="trust">${stars}</span> Score: ${b.trustScoreSnapshot||5} | ⏳ <span class="timer">${mins}m left</span></div>
+    <div class="brow">📦 ${b.productId?.name||'—'} × ${b.quantity} = ₹${b.productId?.price?b.productId.price*b.quantity:'—'}</div>
+    ${actions&&b.status==='pending'?`<div class="bactions"><button class="abtn ab-pack" onclick="upStatus('${b._id}','packing')">📦 Packing</button><button class="abtn ab-ready" onclick="upStatus('${b._id}','ready')">✅ Ready</button></div>`:''}
+    ${actions&&b.status==='packing'?`<div class="bactions"><button class="abtn ab-ready" onclick="upStatus('${b._id}','ready')" style="flex:1">✅ Mark Ready</button></div>`:''}
+    ${actions&&b.status==='ready'?`<div class="bactions"><button class="abtn ab-done" onclick="upStatus('${b._id}','completed')" style="flex:1">🏆 Completed</button></div>`:''}
+  </div>`;
+}
+
+async function upStatus(id,status){
+  try{await aPut(`/bookings/${id}/status`,{status});toast('✅ Updated!');loadAllBookings();loadDash();}catch(e){toast('❌ Failed');}
+}
+
+function openAddProd(){editProd=null;document.getElementById('prodModalTitle').textContent='➕ नया उत्पाद';['pN','pP','pOP','pSt','pD'].forEach(i=>document.getElementById(i).value='');document.getElementById('prodModal').classList.add('open');}
+function editProdFn(p){editProd=p;document.getElementById('prodModalTitle').textContent='✏️ उत्पाद Edit करें';document.getElementById('pN').value=p.name;document.getElementById('pP').value=p.price;document.getElementById('pOP').value=p.originalPrice||'';document.getElementById('pSt').value=p.stock;document.getElementById('pU').value=p.unit;document.getElementById('pD').value=p.description||'';document.getElementById('prodModal').classList.add('open');}
+function closeProdModal(){document.getElementById('prodModal').classList.remove('open');}
+
+async function saveProd(){
+  const name=document.getElementById('pN').value.trim();
+  const price=document.getElementById('pP').value;
+  if(!name||!price)return toast('⚠️ नाम और price जरूरी');
+  const data={name,price:+price,originalPrice:+(document.getElementById('pOP').value||0),stock:+(document.getElementById('pSt').value||0),unit:document.getElementById('pU').value,category:document.getElementById('pC').value,description:document.getElementById('pD').value};
+  try{
+    if(editProd){await aPut(`/products/${editProd._id}`,data);toast('✅ Updated!');}
+    else{await aPut('/products',data,'POST');toast('✅ Product added!');}
+    closeProdModal();loadProds();
+  }catch(e){toast('❌ Save failed');}
+}
+
+async function delProd(id){
+  if(!confirm('Delete this product?'))return;
+  try{
+    const r=await fetch(`/api/products/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+tok}});
+    toast('🗑️ Deleted');loadProds();
+  }catch(e){toast('❌ Failed');}
+}
+
+function sw(id,title,el){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('ttitle').textContent=title;
+  document.getElementById('fab').style.display=(id==='sProds'&&sd.shopId)?'flex':'none';
+  if(id==='sDash')loadDash();
+  if(id==='sShopSetup')loadShopSetup();
+  if(id==='sProds')loadProds();
+  if(id==='sBooks')loadAllBookings();
+}
+
+// API helpers
+async function get(url){const r=await fetch('/api'+url);return r.json();}
+async function post(url,body){const r=await fetch('/api'+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.json();}
+async function aGet(url){const r=await fetch('/api'+url,{headers:{Authorization:'Bearer '+tok}});return r.json();}
+async function aPut(url,body,method='PUT'){const r=await fetch('/api'+url,{method,headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify(body)});return r.json();}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>
