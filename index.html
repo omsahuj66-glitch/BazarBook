@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Kirana — अपने घर की दुकान</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B00;
+    --saffron-light: #FF8C38;
+    --saffron-glow: rgba(255,107,0,0.15);
+    --green: #22C55E;
+    --green-dark: #16A34A;
+    --cream: #FFFBF5;
+    --warm-white: #FFF8EE;
+    --ink: #1A0F00;
+    --ink-soft: #4A3728;
+    --ink-muted: #8B7355;
+    --border: #F0E0C8;
+    --shadow: 0 4px 24px rgba(255,107,0,0.12);
+    --shadow-lg: 0 8px 40px rgba(255,107,0,0.2);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Mukta', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── HEADER ─── */
+  .app-header {
+    background: linear-gradient(135deg, var(--saffron) 0%, #FF8C38 100%);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(255,107,0,0.4);
+  }
+
+  .logo {
+    font-family: 'Baloo 2', cursive;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { opacity: 0.85; font-size: 14px; display: block; font-weight: 500; line-height: 1; }
+
+  /* ─── SCREENS ─── */
+  .screen { display: none; min-height: calc(100vh - 60px); }
+  .screen.active { display: block; }
+
+  /* ─── HERO ─── */
+  .hero-section {
+    background: linear-gradient(160deg, #FF6B00 0%, #FF8C38 40%, #FFB366 100%);
+    padding: 40px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section::before {
+    content: '🛒';
+    font-size: 120px;
+    position: absolute;
+    right: -20px;
+    top: -10px;
+    opacity: 0.12;
+    transform: rotate(15deg);
+  }
+
+  .hero-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 32px;
+    font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .hero-sub {
+    color: rgba(255,255,255,0.9);
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+
+  .card-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  /* ─── SELECT ─── */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--saffron);
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  select, input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Mukta', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: white;
+    outline: none;
+    appearance: none;
+    transition: border-color 0.2s;
+  }
+
+  select:focus, input:focus { border-color: var(--saffron); }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Baloo 2', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-light) 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(255,107,0,0.35);
+  }
+
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-green {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(34,197,94,0.35);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--saffron);
+    color: var(--saffron);
+  }
+
+  .btn-sm {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+
+  /* ─── SHOP CARD ─── */
+  .shop-list { padding: 0 16px; }
+
+  .shop-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .shop-card:active { transform: scale(0.99); box-shadow: var(--shadow-lg); }
+
+  .shop-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--saffron-glow);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .shop-info h3 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .shop-info p { font-size: 14px; color: var(--ink-muted); margin-top: 2px; }
+
+  .shop-arrow {
+    margin-left: auto;
+    color: var(--saffron);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ─── PRODUCT GRID ─── */
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .product-emoji { font-size: 36px; margin-bottom: 8px; }
+
+  .product-name {
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .product-price {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--saffron);
+    margin: 4px 0 8px;
+  }
+
+  .product-unit { font-size: 12px; color: var(--ink-muted); margin-bottom: 10px; }
+
+  .book-btn {
+    background: var(--saffron);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+  }
+
+  .book-btn:active { transform: scale(0.97); }
+
+  /* ─── OTP BOXES ─── */
+  .otp-inputs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 16px 0;
+  }
+
+  .otp-inputs input {
+    width: 48px;
+    height: 56px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 0;
+  }
+
+  /* ─── SUCCESS ─── */
+  .success-screen {
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .success-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #22C55E, #16A34A);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(34,197,94,0.35);
+    animation: pop 0.4s ease;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  .success-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .booking-id-badge {
+    background: var(--saffron-glow);
+    border: 2px dashed var(--saffron);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin: 20px 0;
+    font-family: 'Baloo 2', cursive;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--saffron);
+    letter-spacing: 2px;
+  }
+
+  .countdown-box {
+    background: #FFF3E0;
+    border: 2px solid #FFB74D;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  .countdown-label { font-size: 14px; color: var(--ink-muted); margin-bottom: 6px; }
+
+  .countdown-timer {
+    font-family: 'Baloo 2', cursive;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--saffron);
+  }
+
+  /* ─── TAGS ─── */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .tag-city { background: #EFF6FF; color: #2563EB; }
+  .tag-town { background: #F0FDF4; color: #16A34A; }
+  .tag-village { background: #FFF7ED; color: #EA580C; }
+
+  /* ─── BACK BTN ─── */
+  .back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-family: 'Baloo 2', cursive;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 16px 20px 8px;
+    color: var(--ink);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--ink-muted);
+  }
+
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
+
+  .qty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .qty-btn {
+    width: 40px; height: 40px;
+    background: var(--saffron-glow);
+    border: 2px solid var(--saffron);
+    border-radius: 8px;
+    color: var(--saffron);
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .qty-display {
+    font-family: 'Baloo 2', cursive;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+    min-width: 32px;
+    text-align: center;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 15px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--ink-muted);
+    font-size: 16px;
+  }
+
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--saffron);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .upi-box {
+    background: #F0FDF4;
+    border: 2px solid #22C55E;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    margin: 12px 0;
+  }
+
+  .upi-label { font-size: 12px; color: var(--green-dark); margin-bottom: 4px; }
+  .upi-id { font-family: 'Baloo 2', cursive; font-size: 17px; font-weight: 700; color: var(--green-dark); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header" id="appHeader">
+  <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">←</button>
+  <div class="logo">
+    🛒 Smart Kirana
+    <span>आपकी अपनी दुकान</span>
+  </div>
+  <div style="font-size:20px">📍</div>
+</header>
+
+<!-- SCREEN 1: SELECT AREA -->
+<div class="screen active" id="screenArea">
+  <div class="hero-section">
+    <div class="hero-title">नमस्ते! 🙏<br>कहाँ से हैं आप?</div>
+    <div class="hero-sub">अपना इलाका चुनें, पास की दुकान खोजें</div>
+  </div>
+
+  <div class="card" style="margin-top:-24px;border-radius:24px 24px 16px 16px;">
+    <div class="card-title">📍 अपना इलाका चुनें</div>
+    <div class="select-wrap">
+      <select id="locationSelect" onchange="onLocationSelect()">
+        <option value="">-- इलाका चुनें --</option>
+      </select>
+    </div>
+    <div id="locationLoading" class="loading" style="padding:16px;display:none">
+      <div class="spinner"></div>
+      <div>लोड हो रहा है...</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2: SHOP LIST -->
+<div class="screen" id="screenShops">
+  <div class="section-label" id="areaTitle">दुकानें</div>
+  <div id="shopList" class="shop-list">
+    <div class="loading"><div class="spinner"></div><div>दुकानें खोज रहे हैं...</div></div>
+  </div>
+</div>
+
+<!-- SCREEN 3: SHOP PRODUCTS -->
+<div class="screen" id="screenProducts">
+  <div class="card">
+    <div id="shopDetailInfo"></div>
+  </div>
+  <div class="section-label">उपलब्ध सामान</div>
+  <div id="productGrid" class="product-grid"></div>
+</div>
+
+<!-- SCREEN 4: BOOKING FORM -->
+<div class="screen" id="screenBook">
+  <div class="card">
+    <div class="card-title" id="bookingProductTitle">बुकिंग करें</div>
+    <div id="productSummary" style="margin-bottom:16px;padding:12px;background:var(--saffron-glow);border-radius:10px;"></div>
+
+    <div class="qty-row">
+      <span style="font-weight:600;font-size:15px;">मात्रा:</span>
+      <button class="qty-btn" onclick="changeQty(-1)">−</button>
+      <span class="qty-display" id="qtyDisplay">1</span>
+      <button class="qty-btn" onclick="changeQty(1)">+</button>
+      <span style="color:var(--ink-muted);font-size:14px;" id="unitLabel">piece</span>
+    </div>
+
+    <div class="form-group">
+      <label>आपका नाम *</label>
+      <input type="text" id="custName" placeholder="जैसे: Ravi Kumar" />
+    </div>
+    <div class="form-group">
+      <label>मोबाइल नंबर *</label>
+      <input type="tel" id="custPhone" placeholder="10 अंक का नंबर" maxlength="10" />
+    </div>
+    <button class="btn btn-primary" onclick="sendOTP()">📱 OTP भेजें</button>
+  </div>
+</div>
+
+<!-- SCREEN 5: OTP VERIFY -->
+<div class="screen" id="screenOTP">
+  <div class="card">
+    <div class="card-title">📱 OTP दर्ज करें</div>
+    <p style="color:var(--ink-muted);font-size:15px;margin-bottom:8px;" id="otpSentTo"></p>
+
+    <div class="otp-inputs">
+      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,0)" />
+      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,1)" />
+      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,2)" />
+      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,3)" />
+      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,4)" />
+      <input type="number" class="otp-box" maxlength="1" oninput="otpInput(this,5)" />
+    </div>
+
+    <button class="btn btn-primary" onclick="verifyOTP()">✅ OTP सत्यापित करें</button>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="sendOTP()">🔄 OTP दोबारा भेजें</button>
+    <p id="devOtpHint" style="text-align:center;color:var(--saffron);font-weight:600;margin-top:10px;display:none;"></p>
+  </div>
+</div>
+
+<!-- SCREEN 6: SUCCESS -->
+<div class="screen" id="screenSuccess">
+  <div class="success-screen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">बुकिंग हो गई!</div>
+    <p style="color:var(--ink-muted);font-size:16px;">आपकी बुकिंग सफलतापूर्वक दर्ज हो गई है</p>
+
+    <div class="booking-id-badge" id="successBookingId">BK-XXXXXX</div>
+
+    <div class="countdown-box">
+      <div class="countdown-label">⏳ इतने समय में लेने आएं</div>
+      <div class="countdown-timer" id="pickupTimer">45:00</div>
+    </div>
+
+    <div id="successUPI"></div>
+
+    <div style="background:#F0FDF4;border-radius:var(--radius-sm);padding:14px;margin:12px 0;text-align:left;">
+      <div id="successDetails"></div>
+    </div>
+
+    <button class="btn btn-primary" onclick="goHome()" style="margin-top:8px;">🏠 होम पर जाएं</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let state = {
+  locations: [],
+  selectedLocation: null,
+  selectedShop: null,
+  selectedProduct: null,
+  quantity: 1,
+  customerName: '',
+  customerPhone: '',
+  screenHistory: ['screenArea'],
+  pickupInterval: null
+};
+
+// ─── INIT ───
+window.onload = async () => {
+  await loadLocations();
+};
+
+async function loadLocations() {
+  document.getElementById('locationLoading').style.display = 'block';
+  try {
+    const res = await fetch(`${API}/api/locations`);
+    state.locations = await res.json();
+    const sel = document.getElementById('locationSelect');
+    state.locations.forEach(loc => {
+      const opt = document.createElement('option');
+      opt.value = loc._id;
+      opt.textContent = `${loc.name} (${loc.type === 'city' ? 'शहर' : loc.type === 'town' ? 'कस्बा' : 'गाँव'})`;
+      sel.appendChild(opt);
+    });
+  } catch(e) {
+    showToast('❌ कनेक्शन में समस्या');
+  }
+  document.getElementById('locationLoading').style.display = 'none';
+}
+
+function onLocationSelect() {
+  const locId = document.getElementById('locationSelect').value;
+  if (!locId) return;
+  state.selectedLocation = state.locations.find(l => l._id === locId);
+  loadShops(locId);
+}
+
+async function loadShops(locationId) {
+  showScreen('screenShops');
+  document.getElementById('areaTitle').textContent = `📍 ${state.selectedLocation?.name} — दुकानें`;
+  document.getElementById('shopList').innerHTML = '<div class="loading"><div class="spinner"></div><div>दुकानें खोज रहे हैं...</div></div>';
+
+  try {
+    const res = await fetch(`${API}/api/shops/location/${locationId}`);
+    const shops = await res.json();
+    renderShops(shops);
+  } catch(e) {
+    document.getElementById('shopList').innerHTML = '<div class="empty-state"><div class="emoji">😕</div><p>दुकानें लोड नहीं हुईं</p></div>';
+  }
+}
+
+function renderShops(shops) {
+  const cont = document.getElementById('shopList');
+  if (!shops.length) {
+    cont.innerHTML = '<div class="empty-state"><div class="emoji">🏪</div><p>इस इलाके में कोई दुकान नहीं मिली</p></div>';
+    return;
+  }
+  cont.innerHTML = shops.map(shop => `
+    <div class="shop-card" onclick="openShop('${shop._id}')">
+      <div class="shop-icon">🏪</div>
+      <div class="shop-info">
+        <h3>${shop.name}</h3>
+        <p>📞 ${shop.phone}</p>
+        ${shop.upiId ? `<p>💳 UPI: ${shop.upiId}</p>` : ''}
+      </div>
+      <div class="shop-arrow">›</div>
+    </div>
+  `).join('');
+}
+
+async function openShop(shopId) {
+  showScreen('screenProducts');
+  document.getElementById('productGrid').innerHTML = '<div class="loading" style="grid-column:1/-1"><div class="spinner"></div><div>सामान लोड हो रहा है...</div></div>';
+
+  try {
+    const [shopRes, prodRes] = await Promise.all([
+      fetch(`${API}/api/shops/${shopId}`),
+      fetch(`${API}/api/products/shop/${shopId}`)
+    ]);
+    state.selectedShop = await shopRes.json();
+    const products = await prodRes.json();
+
+    document.getElementById('shopDetailInfo').innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:40px">🏪</div>
+        <div>
+          <div style="font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;">${state.selectedShop.name}</div>
+          <div style="color:var(--ink-muted);font-size:14px;">📞 ${state.selectedShop.phone}</div>
+          ${state.selectedShop.upiId ? `<div style="color:var(--green-dark);font-size:13px;font-weight:600;">💳 UPI: ${state.selectedShop.upiId}</div>` : ''}
+        </div>
+      </div>
+    `;
+
+    renderProducts(products);
+  } catch(e) {
+    document.getElementById('productGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">😕</div><p>लोड नहीं हुआ</p></div>';
+  }
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById('productGrid');
+  if (!products.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="emoji">📦</div><p>अभी कोई सामान उपलब्ध नहीं</p></div>';
+    return;
+  }
+  const emojis = {'चावल':'🌾','दाल':'🫘','आटा':'🌾','तेल':'🫙','नमक':'🧂','चीनी':'🍬','चाय':'🍵','साबुन':'🧼','शैम्पू':'🧴'};
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <div class="product-emoji">${emojis[p.name] || '🛒'}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">₹${p.price}</div>
+      <div class="product-unit">प्रति ${p.unit}</div>
+      <button class="book-btn" onclick="startBooking('${p._id}','${p.name}',${p.price},'${p.unit}')">
+        📋 Book Now
+      </button>
+    </div>
+  `).join('');
+}
+
+function startBooking(productId, name, price, unit) {
+  state.selectedProduct = { _id: productId, name, price, unit };
+  state.quantity = 1;
+  document.getElementById('bookingProductTitle').textContent = `📋 ${name} बुक करें`;
+  document.getElementById('productSummary').innerHTML = `
+    <strong>${name}</strong> — ₹${price} / ${unit}
+  `;
+  document.getElementById('qtyDisplay').textContent = '1';
+  document.getElementById('unitLabel').textContent = unit;
+  showScreen('screenBook');
+}
+
+function changeQty(delta) {
+  state.quantity = Math.max(1, state.quantity + delta);
+  document.getElementById('qtyDisplay').textContent = state.quantity;
+}
+
+async function sendOTP() {
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  if (!name) return showToast('⚠️ नाम दर्ज करें');
+  if (phone.length !== 10) return showToast('⚠️ 10 अंक का नंबर दर्ज करें');
+
+  state.customerName = name;
+  state.customerPhone = phone;
+
+  try {
+    const res = await fetch(`${API}/api/otp/send`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ phone })
+    });
+    const data = await res.json();
+    if (data.otp) {
+      document.getElementById('devOtpHint').style.display = 'block';
+      document.getElementById('devOtpHint').textContent = `🔧 Dev OTP: ${data.otp}`;
+    }
+    document.getElementById('otpSentTo').textContent = `OTP भेजा गया: +91 ${phone}`;
+    showScreen('screenOTP');
+    showToast('📱 OTP भेजा गया!');
+  } catch(e) {
+    showToast('❌ OTP भेजने में समस्या');
+  }
+}
+
+function otpInput(el, idx) {
+  el.value = el.value.slice(-1);
+  const boxes = document.querySelectorAll('.otp-box');
+  if (el.value && idx < 5) boxes[idx+1].focus();
+}
+
+async function verifyOTP() {
+  const boxes = document.querySelectorAll('.otp-box');
+  const otp = Array.from(boxes).map(b => b.value).join('');
+  if (otp.length !== 6) return showToast('⚠️ 6 अंक का OTP दर्ज करें');
+
+  try {
+    const res = await fetch(`${API}/api/otp/verify`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ phone: state.customerPhone, otp })
+    });
+    const data = await res.json();
+    if (!data.verified) return showToast('❌ गलत OTP');
+    confirmBooking();
+  } catch(e) {
+    showToast('❌ OTP सत्यापन विफल');
+  }
+}
+
+async function confirmBooking() {
+  try {
+    const res = await fetch(`${API}/api/bookings`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        shopId: state.selectedShop._id,
+        productId: state.selectedProduct._id,
+        quantity: state.quantity,
+        customerName: state.customerName,
+        phone: state.customerPhone
+      })
+    });
+    const data = await res.json();
+    if (!data.success) return showToast('❌ बुकिंग विफल: ' + data.error);
+    showSuccessScreen(data.booking);
+  } catch(e) {
+    showToast('❌ बुकिंग में समस्या');
+  }
+}
+
+function showSuccessScreen(booking) {
+  document.getElementById('successBookingId').textContent = booking.bookingId;
+  document.getElementById('successDetails').innerHTML = `
+    <div style="font-size:14px;line-height:2;">
+      <div>🛒 <strong>सामान:</strong> ${state.selectedProduct.name} × ${state.quantity}</div>
+      <div>💰 <strong>कुल:</strong> ₹${state.selectedProduct.price * state.quantity}</div>
+      <div>🏪 <strong>दुकान:</strong> ${state.selectedShop.name}</div>
+      <div>📞 <strong>दुकान फोन:</strong> ${state.selectedShop.phone}</div>
+    </div>
+  `;
+  if (state.selectedShop.upiId) {
+    document.getElementById('successUPI').innerHTML = `
+      <div class="upi-box">
+        <div class="upi-label">💳 UPI से भुगतान करें</div>
+        <div class="upi-id">${state.selectedShop.upiId}</div>
+      </div>
+    `;
+  }
+
+  // Countdown 45 min
+  let seconds = 45 * 60;
+  if (state.pickupInterval) clearInterval(state.pickupInterval);
+  state.pickupInterval = setInterval(() => {
+    seconds--;
+    const m = Math.floor(seconds/60).toString().padStart(2,'0');
+    const s = (seconds%60).toString().padStart(2,'0');
+    document.getElementById('pickupTimer').textContent = `${m}:${s}`;
+    if (seconds <= 0) clearInterval(state.pickupInterval);
+  }, 1000);
+
+  showScreen('screenSuccess');
+}
+
+function goHome() {
+  state.screenHistory = ['screenArea'];
+  showScreen('screenArea', true);
+  document.getElementById('locationSelect').value = '';
+}
+
+// ─── NAVIGATION ───
+function showScreen(id, reset=false) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (!reset) state.screenHistory.push(id);
+
+  const backBtn = document.getElementById('backBtn');
+  backBtn.style.display = state.screenHistory.length > 1 ? 'block' : 'none';
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  if (state.screenHistory.length <= 1) return;
+  state.screenHistory.pop();
+  const prev = state.screenHistory[state.screenHistory.length-1];
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(prev).classList.add('active');
+  document.getElementById('backBtn').style.display = state.screenHistory.length > 1 ? 'block' : 'none';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
