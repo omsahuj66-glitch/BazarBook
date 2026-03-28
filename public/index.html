@@ -2,570 +2,464 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seller Panel — Smart Kirana</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BazaarBook — आपका अपना बाज़ार</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --primary: #7C3AED;
-    --primary-light: #A78BFA;
-    --primary-glow: rgba(124,58,237,0.12);
-    --green: #10B981;
-    --red: #EF4444;
-    --orange: #F59E0B;
-    --bg: #F5F3FF;
-    --card: #FFFFFF;
-    --ink: #1E1B2E;
-    --ink-soft: #4B4670;
-    --ink-muted: #9CA3AF;
-    --border: #EDE9FE;
-    --radius: 16px;
-    --shadow: 0 4px 20px rgba(124,58,237,0.1);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Mukta',sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; }
+:root{
+  --bg:#F0F2F5;--white:#fff;--ink:#0D1117;--ink2:#444;--muted:#888;
+  --primary:#E65100;--primary2:#FF6D00;--green:#2E7D32;--border:#E0E0E0;
+  --radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 
-  /* ── AUTH ── */
-  .auth-wrap {
-    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
-    background: linear-gradient(135deg,#7C3AED 0%,#5B21B6 100%);
-  }
-  .auth-card {
-    background:white; border-radius:24px; padding:32px 28px; width:100%; max-width:400px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  }
-  .auth-logo { font-family:'Baloo 2',cursive; font-size:28px; font-weight:800; color:var(--primary); text-align:center; margin-bottom:4px; }
-  .auth-sub { text-align:center; color:var(--ink-muted); font-size:15px; margin-bottom:28px; }
-  .tab-row { display:flex; gap:0; background:var(--bg); border-radius:10px; padding:4px; margin-bottom:24px; }
-  .tab-btn { flex:1; padding:10px; border:none; border-radius:8px; font-family:'Baloo 2',cursive; font-size:15px; font-weight:600; cursor:pointer; background:transparent; color:var(--ink-soft); transition:all 0.2s; }
-  .tab-btn.active { background:var(--primary); color:white; box-shadow:0 2px 10px rgba(124,58,237,0.3); }
-  .form-group { margin-bottom:14px; }
-  .form-group label { display:block; font-size:13px; font-weight:600; color:var(--ink-soft); margin-bottom:6px; }
-  .form-group input {
-    width:100%; padding:13px 16px; border:2px solid var(--border); border-radius:10px;
-    font-family:'Mukta',sans-serif; font-size:16px; color:var(--ink); outline:none; transition:border-color 0.2s;
-  }
-  .form-group input:focus { border-color:var(--primary); }
-  .btn { width:100%; padding:15px; border:none; border-radius:10px; font-family:'Baloo 2',cursive; font-size:17px; font-weight:700; cursor:pointer; transition:all 0.2s; }
-  .btn-primary { background:linear-gradient(135deg,var(--primary),#5B21B6); color:white; box-shadow:0 4px 16px rgba(124,58,237,0.35); }
-  .btn-primary:active { transform:scale(0.98); }
+/* ── HEADER ── */
+.header{background:linear-gradient(90deg,#BF360C,var(--primary));position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.header-top{display:flex;align-items:center;gap:10px;padding:10px 16px;}
+.logo-text{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:#fff;white-space:nowrap;}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.7);line-height:1;font-weight:400;}
+.search-bar{flex:1;display:flex;background:#fff;border-radius:8px;overflow:hidden;min-width:0;}
+.search-bar input{flex:1;padding:9px 12px;border:none;font-size:15px;font-family:'Hind',sans-serif;outline:none;min-width:0;}
+.search-bar button{background:var(--primary2);border:none;padding:0 14px;color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;}
+.location-bar{background:rgba(0,0,0,0.2);padding:6px 16px;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.location-bar span{color:rgba(255,255,255,0.9);font-size:13px;}
+.loc-name{color:#fff;font-weight:600;font-size:13px;}
 
-  /* ── APP LAYOUT ── */
-  #app { display:none; }
-  .top-bar {
-    background:linear-gradient(135deg,var(--primary),#5B21B6);
-    color:white; padding:14px 20px;
-    display:flex; align-items:center; justify-content:space-between;
-    position:sticky; top:0; z-index:100;
-    box-shadow: 0 2px 20px rgba(124,58,237,0.3);
-  }
-  .top-bar-title { font-family:'Baloo 2',cursive; font-size:18px; font-weight:700; }
-  .logout-btn { background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+/* ── SCREENS ── */
+.screen{display:none;padding-bottom:24px;}
+.screen.active{display:block;}
 
-  /* ── NAV ── */
-  .bottom-nav {
-    position:fixed; bottom:0; left:0; right:0;
-    background:white; border-top:2px solid var(--border);
-    display:flex; z-index:100;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-  }
-  .nav-item { flex:1; padding:12px 4px 8px; text-align:center; cursor:pointer; transition:all 0.2s; border:none; background:none; }
-  .nav-item .nav-icon { font-size:22px; display:block; }
-  .nav-item .nav-label { font-size:11px; font-weight:600; color:var(--ink-muted); margin-top:2px; display:block; }
-  .nav-item.active .nav-label { color:var(--primary); }
-  .nav-item.active .nav-icon { filter: drop-shadow(0 2px 4px rgba(124,58,237,0.4)); }
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#E65100,#FF6D00,#FFA000);padding:28px 20px 36px;text-align:center;position:relative;overflow:hidden;}
+.hero::after{content:'🛒';position:absolute;right:-10px;bottom:-10px;font-size:100px;opacity:0.1;}
+.hero h1{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:6px;}
+.hero p{color:rgba(255,255,255,0.88);font-size:15px;margin-bottom:20px;}
+.hero-search{background:#fff;border-radius:10px;display:flex;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.2);}
+.hero-search input{flex:1;padding:14px 16px;border:none;font-size:16px;outline:none;font-family:'Hind',sans-serif;}
+.hero-search button{background:var(--primary);border:none;padding:0 20px;color:#fff;font-size:20px;cursor:pointer;}
 
-  /* ── SCREENS ── */
-  .screen { display:none; padding:16px 16px 90px; }
-  .screen.active { display:block; }
+/* ── LOCATION PICKER ── */
+.loc-section{background:#fff;margin:16px;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.loc-title{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;margin-bottom:14px;}
+.loc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.loc-chip{padding:14px;border:2px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;}
+.loc-chip:active,.loc-chip:hover{border-color:var(--primary);background:#FFF3E0;}
+.loc-chip .lc-name{font-weight:600;font-size:15px;color:var(--ink);}
+.loc-chip .lc-type{font-size:11px;color:var(--muted);margin-top:2px;}
 
-  /* ── STAT CARDS ── */
-  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
-  .stat-card {
-    background:white; border-radius:var(--radius); padding:16px;
-    box-shadow:var(--shadow); border:1px solid var(--border); text-align:center;
-  }
-  .stat-icon { font-size:28px; margin-bottom:6px; }
-  .stat-num { font-family:'Baloo 2',cursive; font-size:26px; font-weight:800; color:var(--primary); }
-  .stat-label { font-size:12px; color:var(--ink-muted); margin-top:2px; }
+/* ── SECTION HEADER ── */
+.sec-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;}
+.sec-title{font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;}
+.see-all{color:var(--primary);font-size:13px;font-weight:600;cursor:pointer;}
 
-  /* ── SECTION ── */
-  .section-title { font-family:'Baloo 2',cursive; font-size:18px; font-weight:700; margin-bottom:12px; color:var(--ink); }
+/* ── CATEGORY SCROLL ── */
+.cat-row{display:flex;gap:10px;padding:0 16px 8px;overflow-x:auto;scrollbar-width:none;}
+.cat-row::-webkit-scrollbar{display:none;}
+.cat-chip{flex-shrink:0;padding:8px 16px;border:2px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;white-space:nowrap;transition:all 0.15s;}
+.cat-chip.active,.cat-chip:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 
-  /* ── PRODUCT CARD ── */
-  .item-card {
-    background:white; border-radius:var(--radius); padding:16px; margin-bottom:12px;
-    box-shadow:var(--shadow); border:1px solid var(--border);
-    display:flex; align-items:center; gap:12px;
-  }
-  .item-icon { width:48px; height:48px; background:var(--primary-glow); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-  .item-info { flex:1; }
-  .item-name { font-family:'Baloo 2',cursive; font-size:16px; font-weight:700; }
-  .item-meta { font-size:13px; color:var(--ink-muted); }
-  .item-price { font-size:17px; font-weight:700; color:var(--primary); }
-  .item-actions { display:flex; flex-direction:column; gap:6px; }
-  .icon-btn {
-    width:34px; height:34px; border-radius:8px; border:none; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; font-size:16px;
-  }
-  .edit-btn { background:#EDE9FE; }
-  .del-btn { background:#FEE2E2; }
+/* ── SHOP CARD ── */
+.shops-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px;}
+.shop-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s;}
+.shop-card:active{transform:scale(0.98);}
+.shop-card-banner{height:80px;background:linear-gradient(135deg,#E65100,#FF6D00);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.shop-card-body{padding:10px;}
+.shop-card-name{font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;margin-bottom:2px;}
+.shop-card-loc{font-size:11px;color:var(--muted);}
+.shop-badge{display:inline-block;padding:2px 8px;background:#E8F5E9;color:#2E7D32;border-radius:4px;font-size:10px;font-weight:600;margin-top:4px;}
 
-  /* ── BOOKING CARD ── */
-  .booking-card {
-    background:white; border-radius:var(--radius); padding:16px; margin-bottom:12px;
-    box-shadow:var(--shadow); border:1px solid var(--border);
-  }
-  .booking-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-  .booking-id { font-family:'Baloo 2',cursive; font-size:14px; font-weight:700; color:var(--primary); }
-  .status-badge {
-    padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;
-  }
-  .status-pending { background:#FEF3C7; color:#D97706; }
-  .status-ready { background:#D1FAE5; color:#065F46; }
-  .status-completed { background:#DBEAFE; color:#1D4ED8; }
-  .status-cancelled { background:#FEE2E2; color:#991B1B; }
-  .booking-row { display:flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-soft); margin-bottom:4px; }
-  .trust-stars { color:#F59E0B; font-size:14px; }
-  .timer-text { font-family:'Baloo 2',cursive; font-weight:700; color:var(--orange); }
-  .status-actions { display:flex; gap:8px; margin-top:12px; }
-  .status-btn {
-    flex:1; padding:9px; border:none; border-radius:8px; font-family:'Baloo 2',cursive;
-    font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;
-  }
-  .btn-ready { background:#D1FAE5; color:#065F46; }
-  .btn-done { background:#DBEAFE; color:#1D4ED8; }
+/* ── PRODUCT GRID ── */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px;}
+.prod-card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.15s;}
+.prod-card:active{transform:scale(0.98);}
+.prod-img{height:110px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);display:flex;align-items:center;justify-content:center;font-size:48px;}
+.prod-body{padding:10px;}
+.prod-name{font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.3;}
+.prod-price{font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:var(--primary);}
+.prod-orig{font-size:12px;color:var(--muted);text-decoration:line-through;margin-left:4px;}
+.prod-unit{font-size:11px;color:var(--muted);}
+.prod-shop{font-size:11px;color:var(--green);margin-top:4px;}
 
-  /* ── ADD PRODUCT MODAL ── */
-  .modal-overlay {
-    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
-    z-index:200; align-items:flex-end; justify-content:center;
-  }
-  .modal-overlay.open { display:flex; }
-  .modal-sheet {
-    background:white; border-radius:24px 24px 0 0; padding:28px 24px 40px;
-    width:100%; max-height:85vh; overflow-y:auto;
-    animation: slideUp 0.3s ease;
-  }
-  @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
-  .modal-title { font-family:'Baloo 2',cursive; font-size:20px; font-weight:800; margin-bottom:20px; }
-  .modal-close { float:right; background:none; border:none; font-size:22px; cursor:pointer; color:var(--ink-muted); }
+/* ── SHOP DETAIL ── */
+.shop-hero{background:linear-gradient(135deg,#E65100,#FF6D00);padding:24px 20px;color:#fff;}
+.shop-hero-name{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;}
+.shop-hero-meta{font-size:13px;opacity:0.9;margin-top:4px;}
+.shop-hero-meta span{margin-right:12px;}
 
-  .input-field {
-    width:100%; padding:13px 16px; border:2px solid var(--border); border-radius:10px;
-    font-family:'Mukta',sans-serif; font-size:16px; color:var(--ink); outline:none;
-    margin-bottom:12px; appearance:none;
-  }
-  .input-field:focus { border-color:var(--primary); }
+/* ── BOOKING MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-end;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;max-height:90vh;overflow-y:auto;animation:up 0.3s ease;}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-title{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;margin-bottom:16px;}
+.close-modal{float:right;background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer;margin-top:-4px;}
+.prod-sum{background:#FFF3E0;border-radius:10px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.prod-sum-icon{font-size:32px;}
+.prod-sum-name{font-weight:700;font-size:16px;}
+.prod-sum-price{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--primary);}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.qty-btn{width:38px;height:38px;border:2px solid var(--primary);border-radius:8px;background:#FFF3E0;color:var(--primary);font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qty-num{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;min-width:32px;text-align:center;}
+.inp{width:100%;padding:13px 16px;border:2px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:16px;outline:none;margin-bottom:12px;transition:border-color 0.2s;}
+.inp:focus{border-color:var(--primary);}
+.btn{width:100%;padding:15px;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 4px 16px rgba(230,81,0,0.35);}
+.btn-primary:active{transform:scale(0.98);}
+.btn-out{background:transparent;border:2px solid var(--primary);color:var(--primary);margin-top:10px;}
 
-  .fab {
-    position:fixed; bottom:80px; right:20px; width:56px; height:56px;
-    background:linear-gradient(135deg,var(--primary),#5B21B6);
-    border:none; border-radius:50%; color:white; font-size:28px;
-    cursor:pointer; box-shadow:0 4px 20px rgba(124,58,237,0.45);
-    display:flex; align-items:center; justify-content:center;
-    z-index:50; transition:transform 0.2s;
-  }
-  .fab:active { transform:scale(0.92); }
+/* ── OTP ── */
+.otp-row{display:flex;gap:8px;justify-content:center;margin:16px 0;}
+.otp-row input{width:46px;height:52px;text-align:center;font-size:20px;font-weight:700;border:2px solid var(--border);border-radius:10px;outline:none;padding:0;transition:border-color 0.2s;}
+.otp-row input:focus{border-color:var(--primary);}
 
-  .empty { text-align:center; padding:48px 16px; color:var(--ink-muted); }
-  .empty .e-icon { font-size:48px; margin-bottom:12px; }
+/* ── SUCCESS ── */
+.success-wrap{text-align:center;padding:32px 20px;}
+.success-ball{width:90px;height:90px;background:linear-gradient(135deg,#43A047,#2E7D32);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 20px;box-shadow:0 8px 24px rgba(46,125,50,0.35);animation:pop 0.4s ease;}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+.bid{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;letter-spacing:2px;color:var(--primary);background:#FFF3E0;border:2px dashed var(--primary);border-radius:10px;padding:12px;margin:16px 0;}
+.timer-box{background:#FFF8E1;border:2px solid #FFA000;border-radius:10px;padding:14px;margin:12px 0;}
+.timer-count{font-family:'Baloo 2',cursive;font-size:38px;font-weight:800;color:#E65100;}
 
-  .toast {
-    position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:var(--ink); color:white; padding:11px 22px; border-radius:50px;
-    font-size:14px; opacity:0; transition:all 0.3s; z-index:999; white-space:nowrap;
-  }
-  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+/* ── BACK BTN ── */
+.back-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border);}
+.back-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--primary);}
+.back-title{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;}
 
-  .shop-banner {
-    background:linear-gradient(135deg,var(--primary),#5B21B6);
-    color:white; border-radius:var(--radius); padding:20px; margin-bottom:16px;
-  }
-  .shop-banner h2 { font-family:'Baloo 2',cursive; font-size:20px; font-weight:800; }
-  .shop-banner p { opacity:0.85; font-size:14px; margin-top:4px; }
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:12px 24px;border-radius:50px;font-size:14px;opacity:0;transition:all 0.3s;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%)}
 
-  .no-shop-card {
-    background:white; border-radius:var(--radius); padding:32px; text-align:center;
-    box-shadow:var(--shadow);
-  }
+.spin{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;color:var(--muted);}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:sp 0.8s linear infinite;margin-bottom:12px;}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-  select.input-field { background:white; }
+.total-row{background:var(--bg);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.total-label{font-size:14px;color:var(--ink2);}
+.total-amt{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--primary);}
+
+.empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty .ei{font-size:48px;margin-bottom:12px;}
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
-<div id="authWrap" class="auth-wrap">
-  <div class="auth-card">
-    <div class="auth-logo">🏪 Seller Panel</div>
-    <div class="auth-sub">Smart Kirana — Seller Dashboard</div>
-    <div class="tab-row">
-      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-      <button class="tab-btn" onclick="switchTab('register')">Register</button>
+<header class="header">
+  <div class="header-top">
+    <div>
+      <div class="logo-text">🛍️ BazaarBook</div>
+      <div class="logo-sub">आपका डिजिटल बाज़ार</div>
     </div>
+    <div class="search-bar">
+      <input type="text" id="headerSearch" placeholder="दुकान या सामान खोजें..." />
+      <button onclick="doSearch()">🔍</button>
+    </div>
+  </div>
+  <div class="location-bar" onclick="showScreen('sHome')">
+    <span>📍 इलाका:</span>
+    <span class="loc-name" id="headerLoc">चुनें →</span>
+  </div>
+</header>
 
-    <!-- LOGIN -->
-    <div id="loginForm">
-      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="seller@example.com"/></div>
-      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"/></div>
-      <button class="btn btn-primary" onclick="doLogin()">🔓 Login करें</button>
+<!-- HOME -->
+<div class="screen active" id="sHome">
+  <div class="hero">
+    <h1>🛍️ आपका डिजिटल<br>बाज़ार</h1>
+    <p>घर बैठे बुक करो, दुकान पर जाकर उठाओ</p>
+    <div class="hero-search">
+      <input type="text" id="heroSearch" placeholder="सामान या दुकान खोजें..." />
+      <button onclick="doSearchHero()">🔍</button>
     </div>
+  </div>
 
-    <!-- REGISTER -->
-    <div id="registerForm" style="display:none">
-      <div class="form-group"><label>पूरा नाम</label><input type="text" id="regName" placeholder="आपका नाम"/></div>
-      <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@example.com"/></div>
-      <div class="form-group"><label>फोन</label><input type="tel" id="regPhone" placeholder="10 अंक"/></div>
-      <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="••••••••"/></div>
-      <button class="btn btn-primary" onclick="doRegister()">✅ Register करें</button>
+  <div class="loc-section">
+    <div class="loc-title">📍 अपना इलाका चुनें</div>
+    <div class="loc-grid" id="locGrid">
+      <div class="spin"><div class="spinner"></div></div>
     </div>
+  </div>
+
+  <div id="featuredSection" style="display:none">
+    <div class="sec-header">
+      <span class="sec-title">🏪 दुकानें</span>
+      <span class="see-all" onclick="showAllShops()">सभी देखें</span>
+    </div>
+    <div class="shops-row" id="featuredShops"></div>
+
+    <div style="height:16px"></div>
+    <div class="sec-header"><span class="sec-title">🛒 उपलब्ध सामान</span></div>
+    <div class="prod-grid" id="featuredProds"></div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="top-bar">
-    <div class="top-bar-title" id="topBarTitle">📊 Dashboard</div>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+<!-- SEARCH RESULTS -->
+<div class="screen" id="sSearch">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="back-title" id="searchTitle">Search Results</span>
   </div>
+  <div style="height:12px"></div>
+  <div class="prod-grid" id="searchResults"></div>
+</div>
 
-  <!-- Dashboard -->
-  <div class="screen active" id="screenDash">
-    <div id="shopBanner"></div>
-    <div class="stats-grid" id="dashStats"></div>
-    <div class="section-title">📦 हाल की बुकिंग</div>
-    <div id="recentBookings"></div>
+<!-- SHOP DETAIL -->
+<div class="screen" id="sShop">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="back-title" id="shopDetailName">दुकान</span>
   </div>
+  <div class="shop-hero" id="shopHero"></div>
+  <div style="height:8px"></div>
+  <div class="cat-row" id="prodCats"></div>
+  <div class="prod-grid" id="shopProds"></div>
+</div>
 
-  <!-- Products -->
-  <div class="screen" id="screenProducts">
-    <div class="section-title">🛒 मेरे उत्पाद</div>
-    <div id="productsList"></div>
-  </div>
-  <button class="fab" id="fabAdd" onclick="openAddProduct()" style="display:none">+</button>
-
-  <!-- Bookings -->
-  <div class="screen" id="screenBookings">
-    <div class="section-title">📋 सभी बुकिंग</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
-      <button class="status-btn btn-ready" style="flex:none;padding:8px 16px;" onclick="filterBookings('all')">सभी</button>
-      <button class="status-btn" style="flex:none;padding:8px 16px;background:#FEF3C7;color:#D97706;" onclick="filterBookings('pending')">Pending</button>
-      <button class="status-btn btn-ready" style="flex:none;padding:8px 16px;" onclick="filterBookings('ready')">Ready</button>
-      <button class="status-btn btn-done" style="flex:none;padding:8px 16px;" onclick="filterBookings('completed')">Completed</button>
+<!-- SUCCESS -->
+<div class="screen" id="sSuccess">
+  <div class="success-wrap">
+    <div class="success-ball">✅</div>
+    <div style="font-family:'Baloo 2',cursive;font-size:26px;font-weight:800">बुकिंग हो गई! 🎉</div>
+    <p style="color:var(--muted);margin-top:6px">आपकी booking confirm हो गई है</p>
+    <div class="bid" id="successId">BB-XXXXXX</div>
+    <div class="timer-box">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:4px">⏳ इतने समय में लेने आएं</div>
+      <div class="timer-count" id="countdown">45:00</div>
     </div>
-    <div id="bookingsList"></div>
-  </div>
-
-  <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchScreen('screenDash','📊 Dashboard',this)">
-      <span class="nav-icon">📊</span><span class="nav-label">Dashboard</span>
-    </button>
-    <button class="nav-item" onclick="switchScreen('screenProducts','🛒 Products',this)">
-      <span class="nav-icon">🛒</span><span class="nav-label">Products</span>
-    </button>
-    <button class="nav-item" onclick="switchScreen('screenBookings','📋 Bookings',this)">
-      <span class="nav-icon">📋</span><span class="nav-label">Bookings</span>
-    </button>
+    <div id="successInfo" style="text-align:left;background:var(--bg);border-radius:10px;padding:14px;margin:12px 0;font-size:14px;line-height:2;"></div>
+    <div id="successUPI"></div>
+    <button class="btn btn-primary" onclick="goHome()" style="margin-top:12px">🏠 होम पर जाएं</button>
   </div>
 </div>
 
-<!-- ADD/EDIT PRODUCT MODAL -->
-<div class="modal-overlay" id="productModal">
-  <div class="modal-sheet">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title" id="modalTitle">➕ नया उत्पाद जोड़ें</div>
-    <input class="input-field" id="pName" placeholder="उत्पाद का नाम (जैसे: चावल)" />
-    <input class="input-field" id="pPrice" type="number" placeholder="कीमत ₹" />
-    <input class="input-field" id="pStock" type="number" placeholder="स्टॉक" />
-    <select class="input-field" id="pUnit">
-      <option value="kg">किलोग्राम (kg)</option>
-      <option value="piece">नग (piece)</option>
-      <option value="litre">लीटर (litre)</option>
-      <option value="packet">पैकेट</option>
-      <option value="dozen">दर्जन</option>
-    </select>
-    <button class="btn btn-primary" onclick="saveProduct()">💾 सेव करें</button>
+<!-- BOOKING MODAL -->
+<div class="modal-bg" id="bookModal">
+  <div class="modal">
+    <button class="close-modal" onclick="closeBook()">✕</button>
+    <div class="modal-title">📋 बुकिंग करें</div>
+    <div class="prod-sum" id="prodSummary"></div>
+    <div class="qty-row">
+      <span style="font-weight:600">मात्रा:</span>
+      <button class="qty-btn" onclick="chQty(-1)">−</button>
+      <span class="qty-num" id="qtyNum">1</span>
+      <button class="qty-btn" onclick="chQty(1)">+</button>
+      <span style="font-size:13px;color:var(--muted)" id="qtyUnit"></span>
+    </div>
+    <div class="total-row">
+      <span class="total-label">कुल राशि:</span>
+      <span class="total-amt" id="totalAmt">₹0</span>
+    </div>
+    <input class="inp" id="bName" placeholder="आपका पूरा नाम *" />
+    <input class="inp" id="bPhone" placeholder="मोबाइल नंबर (10 अंक) *" maxlength="10" type="tel" />
+    <button class="btn btn-primary" onclick="sendOTP()">📱 OTP भेजें</button>
+  </div>
+</div>
+
+<!-- OTP MODAL -->
+<div class="modal-bg" id="otpModal">
+  <div class="modal">
+    <button class="close-modal" onclick="closeOTP()">✕</button>
+    <div class="modal-title">📱 OTP दर्ज करें</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:8px" id="otpDesc"></p>
+    <div class="otp-row">
+      <input type="number" maxlength="1" oninput="otpIn(this,0)"/>
+      <input type="number" maxlength="1" oninput="otpIn(this,1)"/>
+      <input type="number" maxlength="1" oninput="otpIn(this,2)"/>
+      <input type="number" maxlength="1" oninput="otpIn(this,3)"/>
+      <input type="number" maxlength="1" oninput="otpIn(this,4)"/>
+      <input type="number" maxlength="1" oninput="otpIn(this,5)"/>
+    </div>
+    <p id="devOtp" style="text-align:center;font-weight:700;color:var(--primary);margin-bottom:12px;display:none;"></p>
+    <button class="btn btn-primary" onclick="verOTP()">✅ Verify & बुक करें</button>
+    <button class="btn btn-out" onclick="sendOTP()">🔄 OTP दोबारा भेजें</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const API = '/api';
-let token = localStorage.getItem('sellerToken');
-let sellerData = JSON.parse(localStorage.getItem('sellerData') || '{}');
-let allBookings = [];
-let editingProduct = null;
+const API='';
+let state={loc:null,shop:null,prod:null,qty:1,name:'',phone:'',history:['sHome'],timer:null};
+const emojis={'चावल':'🌾','दाल':'🫘','आटा':'🌾','तेल':'🫙','नमक':'🧂','चीनी':'🍬','चाय':'🍵','साबुन':'🧼','दूध':'🥛','सब्जी':'🥬','फल':'🍎','मसाला':'🌶️'};
+const catEmojis={General:'🛒',Grocery:'🌾',Dairy:'🥛',Vegetables:'🥬',Sweets:'🍬',Medicine:'💊',Stationery:'📚',Electronics:'📱'};
 
-if (token) initApp();
+window.onload=()=>loadLocations();
 
-function switchTab(t) {
-  document.getElementById('loginForm').style.display = t==='login'?'block':'none';
-  document.getElementById('registerForm').style.display = t==='register'?'block':'none';
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(t==='login'&&i===0)||(t==='register'&&i===1)));
+async function loadLocations(){
+  try{
+    const locs=await get('/api/locations');
+    if(!locs.length){document.getElementById('locGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:20px">Admin ne abhi koi location nahi dali</div>';return;}
+    document.getElementById('locGrid').innerHTML=locs.map(l=>`
+      <div class="loc-chip" onclick="selectLoc('${l._id}','${l.name}')">
+        <div class="lc-name">${l.name}</div>
+        <div class="lc-type">${l.type==='city'?'🏙️ शहर':l.type==='town'?'🏘️ कस्बा':'🌾 गाँव'}</div>
+      </div>`).join('');
+  }catch(e){document.getElementById('locGrid').innerHTML='<div style="grid-column:1/-1;color:red;padding:20px">Load failed</div>';}
 }
 
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  if (!email||!pass) return toast('⚠️ सभी फील्ड भरें');
-  try {
-    const res = await post('/auth/seller/login',{email,password:pass});
-    if (res.error) return toast('❌ '+res.error);
-    localStorage.setItem('sellerToken', res.token);
-    localStorage.setItem('sellerData', JSON.stringify(res.seller));
-    token = res.token; sellerData = res.seller;
-    initApp();
-  } catch(e){ toast('❌ लॉगिन विफल'); }
+async function selectLoc(id,name){
+  state.loc={id,name};
+  document.getElementById('headerLoc').textContent=name;
+  document.getElementById('featuredSection').style.display='block';
+  await Promise.all([loadShops(id),loadProds(id)]);
 }
 
-async function doRegister() {
-  const name=document.getElementById('regName').value.trim();
-  const email=document.getElementById('regEmail').value.trim();
-  const phone=document.getElementById('regPhone').value.trim();
-  const pass=document.getElementById('regPass').value;
-  if (!name||!email||!phone||!pass) return toast('⚠️ सभी फील्ड भरें');
-  try {
-    const res = await post('/auth/seller/register',{name,email,phone,password:pass});
-    if (res.error) return toast('❌ '+res.error);
-    localStorage.setItem('sellerToken', res.token);
-    localStorage.setItem('sellerData', JSON.stringify(res.seller));
-    token = res.token; sellerData = res.seller;
-    initApp();
-  } catch(e){ toast('❌ Registration विफल'); }
+async function loadShops(locId){
+  try{
+    const shops=await get(`/api/shops/location/${locId}`);
+    document.getElementById('featuredShops').innerHTML=shops.slice(0,6).map(s=>`
+      <div class="shop-card" onclick="openShop('${s._id}')">
+        <div class="shop-card-banner">${catEmojis[s.category]||'🏪'}</div>
+        <div class="shop-card-body">
+          <div class="shop-card-name">${s.name}</div>
+          <div class="shop-card-loc">📞 ${s.phone}</div>
+          <span class="shop-badge">✅ Open</span>
+        </div>
+      </div>`).join('')||'<div class="empty" style="grid-column:1/-1"><div class="ei">🏪</div><p>कोई दुकान नहीं</p></div>';
+  }catch(e){}
 }
 
-function logout() {
-  localStorage.removeItem('sellerToken');
-  localStorage.removeItem('sellerData');
-  location.reload();
-}
-
-async function initApp() {
-  document.getElementById('authWrap').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  loadDashboard();
-}
-
-async function loadDashboard() {
-  // Shop banner
-  const shopId = sellerData.shopId;
-  if (shopId) {
-    try {
-      const shop = await get(`/shops/${shopId}`);
-      document.getElementById('shopBanner').innerHTML = `
-        <div class="shop-banner">
-          <h2>🏪 ${shop.name}</h2>
-          <p>📞 ${shop.phone} ${shop.upiId?'· 💳 '+shop.upiId:''}</p>
-        </div>`;
-      document.getElementById('fabAdd').style.display = 'flex';
-    } catch(e){}
-  } else {
-    document.getElementById('shopBanner').innerHTML = `
-      <div class="no-shop-card">
-        <div style="font-size:40px;margin-bottom:12px">⏳</div>
-        <div style="font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;">Shop Assigned नहीं हुई</div>
-        <p style="color:var(--ink-muted);margin-top:8px;font-size:14px;">Admin आपको जल्द shop assign करेगा</p>
-      </div>`;
-  }
-
-  // Load bookings for stats
-  try {
-    const bookings = await authGet('/bookings/seller/mine');
-    allBookings = bookings;
-    const pending = bookings.filter(b=>b.status==='pending').length;
-    const ready = bookings.filter(b=>b.status==='ready').length;
-    const done = bookings.filter(b=>b.status==='completed').length;
-    document.getElementById('dashStats').innerHTML = `
-      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-num">${pending}</div><div class="stat-label">Pending</div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-icon">✅</div><div class="stat-num">${ready}</div><div class="stat-label">Ready</div></div>
-      <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-num">${done}</div><div class="stat-label">Completed</div></div>
-      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-num">${bookings.length}</div><div class="stat-label">Total</div></div>`;
-
-    const recent = bookings.slice(0,5);
-    document.getElementById('recentBookings').innerHTML = recent.length
-      ? recent.map(b=>bookingCard(b,true)).join('')
-      : '<div class="empty"><div class="e-icon">📭</div><p>कोई बुकिंग नहीं</p></div>';
-  } catch(e){}
-}
-
-async function loadProducts() {
-  if (!sellerData.shopId) {
-    document.getElementById('productsList').innerHTML = '<div class="empty"><div class="e-icon">🏪</div><p>पहले shop assign होनी चाहिए</p></div>';
-    return;
-  }
-  try {
-    const products = await get(`/products/shop/${sellerData.shopId}`);
-    document.getElementById('productsList').innerHTML = products.length
-      ? products.map(p=>`
-        <div class="item-card">
-          <div class="item-icon">🛒</div>
-          <div class="item-info">
-            <div class="item-name">${p.name}</div>
-            <div class="item-meta">स्टॉक: ${p.stock} ${p.unit}</div>
-            <div class="item-price">₹${p.price}</div>
-          </div>
-          <div class="item-actions">
-            <button class="icon-btn edit-btn" onclick='openEditProduct(${JSON.stringify(p)})'>✏️</button>
-            <button class="icon-btn del-btn" onclick="deleteProduct('${p._id}')">🗑️</button>
-          </div>
-        </div>`).join('')
-      : '<div class="empty"><div class="e-icon">📦</div><p>कोई उत्पाद नहीं — + से जोड़ें</p></div>';
-  } catch(e){ toast('❌ उत्पाद लोड विफल'); }
-}
-
-async function loadBookings() {
-  try {
-    const bookings = await authGet('/bookings/seller/mine');
-    allBookings = bookings;
-    renderBookings(bookings);
-  } catch(e){ toast('❌ बुकिंग लोड विफल'); }
-}
-
-function filterBookings(status) {
-  const list = status==='all' ? allBookings : allBookings.filter(b=>b.status===status);
-  renderBookings(list);
-}
-
-function renderBookings(bookings) {
-  document.getElementById('bookingsList').innerHTML = bookings.length
-    ? bookings.map(b=>bookingCard(b,false)).join('')
-    : '<div class="empty"><div class="e-icon">📭</div><p>कोई बुकिंग नहीं</p></div>';
-}
-
-function bookingCard(b, mini) {
-  const trust = b.trustScoreSnapshot || 5;
-  const stars = '⭐'.repeat(Math.min(5,Math.max(1,Math.round(trust/2))));
-  const timeLeft = Math.max(0, Math.floor((new Date(b.expiresAt)-Date.now())/60000));
-  const statusClass = `status-${b.status}`;
-  const statusText = {pending:'⏳ Pending',ready:'✅ Ready',completed:'🏆 Done',cancelled:'❌ Cancelled'}[b.status];
-  return `
-    <div class="booking-card">
-      <div class="booking-header">
-        <span class="booking-id">${b.bookingId}</span>
-        <span class="status-badge ${statusClass}">${statusText}</span>
-      </div>
-      <div class="booking-row">👤 ${b.customerName} &nbsp;|&nbsp; 📞 ${b.phone}</div>
-      <div class="booking-row">
-        <span class="trust-stars">${stars}</span> Trust: ${trust}
-        &nbsp;|&nbsp; ⏳ <span class="timer-text">${timeLeft} मिनट</span>
-      </div>
-      <div class="booking-row">📦 ${b.productId?.name||'—'} × ${b.quantity}</div>
-      ${!mini && b.status==='pending' ? `
-        <div class="status-actions">
-          <button class="status-btn btn-ready" onclick="updateStatus('${b._id}','ready')">✅ Mark Ready</button>
-          <button class="status-btn btn-done" onclick="updateStatus('${b._id}','completed')">🏆 Completed</button>
-        </div>` : ''}
-      ${!mini && b.status==='ready' ? `
-        <div class="status-actions">
-          <button class="status-btn btn-done" onclick="updateStatus('${b._id}','completed')" style="flex:1">🏆 Mark Completed</button>
-        </div>` : ''}
-    </div>`;
-}
-
-async function updateStatus(id, status) {
-  try {
-    await authPut(`/bookings/${id}/status`,{status});
-    toast('✅ Status updated!');
-    loadBookings();
-    loadDashboard();
-  } catch(e){ toast('❌ Update विफल'); }
-}
-
-// Products CRUD
-function openAddProduct() {
-  editingProduct = null;
-  document.getElementById('modalTitle').textContent = '➕ नया उत्पाद जोड़ें';
-  document.getElementById('pName').value='';
-  document.getElementById('pPrice').value='';
-  document.getElementById('pStock').value='';
-  document.getElementById('pUnit').value='kg';
-  document.getElementById('productModal').classList.add('open');
-}
-
-function openEditProduct(p) {
-  editingProduct = p;
-  document.getElementById('modalTitle').textContent = '✏️ उत्पाद संपादित करें';
-  document.getElementById('pName').value = p.name;
-  document.getElementById('pPrice').value = p.price;
-  document.getElementById('pStock').value = p.stock;
-  document.getElementById('pUnit').value = p.unit;
-  document.getElementById('productModal').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('productModal').classList.remove('open');
-}
-
-async function saveProduct() {
-  const name=document.getElementById('pName').value.trim();
-  const price=document.getElementById('pPrice').value;
-  const stock=document.getElementById('pStock').value;
-  const unit=document.getElementById('pUnit').value;
-  if (!name||!price) return toast('⚠️ नाम और कीमत जरूरी है');
-  try {
-    if (editingProduct) {
-      await authPut(`/products/${editingProduct._id}`,{name,price:+price,stock:+stock,unit});
-      toast('✅ उत्पाद अपडेट हुआ!');
-    } else {
-      await authPost('/products',{name,price:+price,stock:+stock,unit});
-      toast('✅ उत्पाद जोड़ा गया!');
+async function loadProds(locId){
+  try{
+    const shops=await get(`/api/shops/location/${locId}`);
+    const allProds=[];
+    for(const s of shops.slice(0,4)){
+      const prods=await get(`/api/products/shop/${s._id}`);
+      prods.forEach(p=>{p._shopName=s.name;allProds.push(p);});
     }
-    closeModal();
-    loadProducts();
-  } catch(e){ toast('❌ सेव विफल'); }
+    renderProds(allProds.slice(0,12),document.getElementById('featuredProds'));
+  }catch(e){}
 }
 
-async function deleteProduct(id) {
-  if (!confirm('क्या आप यह उत्पाद हटाना चाहते हैं?')) return;
-  try {
-    await authDel(`/products/${id}`);
-    toast('🗑️ उत्पाद हटाया गया');
-    loadProducts();
-  } catch(e){ toast('❌ Delete विफल'); }
+async function openShop(shopId){
+  const [shop,prods]=await Promise.all([get(`/api/shops/${shopId}`),get(`/api/products/shop/${shopId}`)]);
+  state.shop=shop;
+  document.getElementById('shopDetailName').textContent=shop.name;
+  document.getElementById('shopHero').innerHTML=`
+    <div class="shop-hero-name">${catEmojis[shop.category]||'🏪'} ${shop.name}</div>
+    <div class="shop-hero-meta">
+      <span>📞 ${shop.phone}</span>
+      ${shop.upiId?`<span>💳 UPI: ${shop.upiId}</span>`:''}
+    </div>`;
+  renderProds(prods,document.getElementById('shopProds'));
+  push('sShop');
 }
 
-function switchScreen(id, title, el) {
+function renderProds(prods,el){
+  if(!prods.length){el.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="ei">📦</div><p>कोई उत्पाद नहीं</p></div>';return;}
+  el.innerHTML=prods.map(p=>`
+    <div class="prod-card" onclick='openBook(${JSON.stringify(p)})'>
+      <div class="prod-img">${emojis[p.name]||catEmojis[p.category]||'🛒'}</div>
+      <div class="prod-body">
+        <div class="prod-name">${p.name}</div>
+        <div>
+          <span class="prod-price">₹${p.price}</span>
+          ${p.originalPrice>p.price?`<span class="prod-orig">₹${p.originalPrice}</span>`:''}
+        </div>
+        <div class="prod-unit">प्रति ${p.unit}</div>
+        ${p._shopName?`<div class="prod-shop">🏪 ${p._shopName}</div>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function openBook(prod){
+  state.prod=prod;state.qty=1;
+  document.getElementById('prodSummary').innerHTML=`
+    <div class="prod-sum-icon">${emojis[prod.name]||'🛒'}</div>
+    <div><div class="prod-sum-name">${prod.name}</div><div class="prod-sum-price">₹${prod.price} / ${prod.unit}</div></div>`;
+  document.getElementById('qtyUnit').textContent=prod.unit;
+  updTotal();
+  document.getElementById('bookModal').classList.add('open');
+}
+
+function chQty(d){state.qty=Math.max(1,state.qty+d);document.getElementById('qtyNum').textContent=state.qty;updTotal();}
+function updTotal(){document.getElementById('totalAmt').textContent='₹'+(state.prod.price*state.qty);}
+function closeBook(){document.getElementById('bookModal').classList.remove('open');}
+function closeOTP(){document.getElementById('otpModal').classList.remove('open');}
+
+async function sendOTP(){
+  const name=document.getElementById('bName').value.trim();
+  const phone=document.getElementById('bPhone').value.trim();
+  if(!name)return toast('⚠️ नाम दर्ज करें');
+  if(phone.length!==10)return toast('⚠️ 10 अंक का नंबर दर्ज करें');
+  state.name=name;state.phone=phone;
+  try{
+    const r=await post('/api/otp/send',{phone});
+    if(r.error)return toast('❌ '+r.error);
+    document.getElementById('otpDesc').textContent=`OTP भेजा गया: +91 ${phone}`;
+    if(r.otp){document.getElementById('devOtp').style.display='block';document.getElementById('devOtp').textContent=`🔧 Dev OTP: ${r.otp}`;}
+    document.getElementById('bookModal').classList.remove('open');
+    document.getElementById('otpModal').classList.add('open');
+    toast('📱 OTP भेजा गया!');
+  }catch(e){toast('❌ OTP भेजने में समस्या');}
+}
+
+function otpIn(el,idx){
+  el.value=el.value.slice(-1);
+  const boxes=document.querySelectorAll('.otp-row input');
+  if(el.value&&idx<5)boxes[idx+1].focus();
+}
+
+async function verOTP(){
+  const boxes=document.querySelectorAll('.otp-row input');
+  const otp=Array.from(boxes).map(b=>b.value).join('');
+  if(otp.length!==6)return toast('⚠️ 6 अंक का OTP');
+  try{
+    const r=await post('/api/otp/verify',{phone:state.phone,otp});
+    if(!r.success)return toast('❌ गलत OTP');
+    const shopId=state.shop?._id||(await get(`/api/products/${state.prod._id}`))?.shopId;
+    const r2=await post('/api/bookings',{shopId:state.prod.shopId||state.shop._id,productId:state.prod._id,quantity:state.qty,customerName:state.name,phone:state.phone});
+    if(!r2.success)return toast('❌ '+r2.error);
+    closeOTP();
+    showSuccess(r2.booking);
+  }catch(e){toast('❌ Booking failed');}
+}
+
+function showSuccess(b){
+  document.getElementById('successId').textContent=b.bookingId;
+  document.getElementById('successInfo').innerHTML=`
+    <div>🛒 <b>${state.prod.name}</b> × ${state.qty} = ₹${state.prod.price*state.qty}</div>
+    <div>🏪 <b>${state.shop?.name||'दुकान'}</b></div>
+    <div>📞 ${state.shop?.phone||''}</div>
+    <div>👤 ${state.name} | 📱 ${state.phone}</div>`;
+  if(state.shop?.upiId){
+    document.getElementById('successUPI').innerHTML=`<div style="background:#E8F5E9;border:2px solid #43A047;border-radius:10px;padding:12px;text-align:center;margin:8px 0"><div style="font-size:12px;color:#2E7D32">💳 UPI से भुगतान करें</div><div style="font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:#2E7D32">${state.shop.upiId}</div></div>`;
+  }
+  let secs=45*60;
+  if(state.timer)clearInterval(state.timer);
+  state.timer=setInterval(()=>{secs--;const m=Math.floor(secs/60).toString().padStart(2,'0');const s=(secs%60).toString().padStart(2,'0');document.getElementById('countdown').textContent=`${m}:${s}`;if(secs<=0)clearInterval(state.timer);},1000);
+  push('sSuccess');
+}
+
+function goHome(){state.history=['sHome'];showScreen('sHome',true);}
+
+async function doSearch(){const q=document.getElementById('headerSearch').value.trim();if(!q)return;doQ(q);}
+async function doSearchHero(){const q=document.getElementById('heroSearch').value.trim();if(!q)return;doQ(q);}
+async function doQ(q){
+  try{
+    const prods=await get(`/api/products/search?q=${encodeURIComponent(q)}`);
+    document.getElementById('searchTitle').textContent=`"${q}" — ${prods.length} मिले`;
+    renderProds(prods,document.getElementById('searchResults'));
+    push('sSearch');
+  }catch(e){toast('❌ Search failed');}
+}
+
+function push(id){state.history.push(id);showScreen(id);}
+function showScreen(id,reset=false){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('topBarTitle').textContent = title;
-  document.getElementById('fabAdd').style.display = id==='screenProducts' && sellerData.shopId ? 'flex':'none';
-  if (id==='screenProducts') loadProducts();
-  if (id==='screenBookings') loadBookings();
-  if (id==='screenDash') loadDashboard();
+  if(reset)state.history=[id];
+  window.scrollTo(0,0);
+}
+function goBack(){
+  if(state.history.length<=1)return;
+  state.history.pop();
+  showScreen(state.history[state.history.length-1]);
 }
 
-// HTTP helpers
-async function get(url) {
-  const r = await fetch(API+url); return r.json();
-}
-async function post(url,body) {
-  const r = await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  return r.json();
-}
-async function authGet(url) {
-  const r = await fetch(API+url,{headers:{Authorization:'Bearer '+token}}); return r.json();
-}
-async function authPost(url,body) {
-  const r = await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});
-  return r.json();
-}
-async function authPut(url,body) {
-  const r = await fetch(API+url,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});
-  return r.json();
-}
-async function authDel(url) {
-  const r = await fetch(API+url,{method:'DELETE',headers:{Authorization:'Bearer '+token}}); return r.json();
-}
+async function get(url){const r=await fetch(API+url);return r.json();}
+async function post(url,body){const r=await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.json();}
 
-function toast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 </script>
 </body>
 </html>
