@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const rateLimit = require('express-rate-limit');
 const path = require('path');
 
 const app = express();
@@ -10,44 +9,44 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Rate limiting
-app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 150 }));
-
-// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => { console.log('✅ MongoDB connected'); seedAdmin(); })
-  .catch(err => console.error('❌ MongoDB:', err.message));
-
-// Routes
-app.use('/api/auth',      require('./routes/auth'));
-app.use('/api/locations', require('./routes/locations'));
-app.use('/api/shops',     require('./routes/shops'));
-app.use('/api/products',  require('./routes/products'));
-app.use('/api/bookings',  require('./routes/bookings'));
-app.use('/api/admin',     require('./routes/admin'));
-app.use('/api/otp',       require('./routes/otp'));
-
-// SPA fallback
-app.get('/seller*', (req, res) => res.sendFile(path.join(__dirname, 'public/seller.html')));
-app.get('/admin*',  (req, res) => res.sendFile(path.join(__dirname, 'public/admin.html')));
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public/home.html')));
-
-// Auto-cancel expired bookings every 60s
-const { autoCancelExpired } = require('./controllers/bookingController');
-setInterval(autoCancelExpired, 60000);
-
-async function seedAdmin() {
-  const Admin = require('./models/Admin');
-  const bcrypt = require('bcryptjs');
-  if (!await Admin.findOne({ username: 'admin' })) {
-    await Admin.create({ username: 'admin', password: await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10) });
-    console.log('✅ Admin seeded: admin / admin123');
-  }
+let isConnected = false;
+async function connectDB() {
+  if (isConnected) return;
+  await mongoose.connect(process.env.MONGO_URI);
+  isConnected = true;
 }
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 BazaarBook running → http://localhost:${PORT}`));
+// Routes
+app.use('/api/auth',      async (req,res,next) => { await connectDB(); next(); }, require('./routes/auth'));
+app.use('/api/locations', async (req,res,next) => { await connectDB(); next(); }, require('./routes/locations'));
+app.use('/api/shops',     async (req,res,next) => { await connectDB(); next(); }, require('./routes/shops'));
+app.use('/api/products',  async (req,res,next) => { await connectDB(); next(); }, require('./routes/products'));
+app.use('/api/bookings',  async (req,res,next) => { await connectDB(); next(); }, require('./routes/bookings'));
+app.use('/api/admin',     async (req,res,next) => { await connectDB(); next(); }, require('./routes/admin'));
+app.use('/api/otp',       async (req,res,next) => { await connectDB(); next(); }, require('./routes/otp'));
+
+app.get('/seller*', (req, res) => res.sendFile(path.join(__dirname, 'public/seller.html')));
+app.get('/admin*',  (req, res) => res.sendFile(path.join(__dirname, 'public/admin.html')));
+app.get('*',        (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
+
+// Seed admin on first request
+app.use(async (req, res, next) => {
+  await connectDB();
+  const Admin = require('./models').Admin;
+  const bcrypt = require('bcryptjs');
+  const exists = await Admin.findOne({ username: 'admin' });
+  if (!exists) {
+    await Admin.create({ username: 'admin', password: await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10) });
+  }
+  next();
+});
+
+module.exports = app;
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log('Running on ' + PORT));
+}
