@@ -3,689 +3,566 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel — Smart Kirana</title>
+<title>Seller Panel — Smart Kirana</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --admin: #0F172A;
-    --admin2: #1E293B;
-    --admin3: #334155;
-    --accent: #F59E0B;
-    --accent2: #FBBF24;
+    --primary: #7C3AED;
+    --primary-light: #A78BFA;
+    --primary-glow: rgba(124,58,237,0.12);
     --green: #10B981;
     --red: #EF4444;
-    --blue: #3B82F6;
-    --purple: #8B5CF6;
-    --text: #F1F5F9;
-    --text-muted: #94A3B8;
-    --border: #334155;
-    --card: #1E293B;
-    --radius: 14px;
-    --shadow: 0 4px 20px rgba(0,0,0,0.3);
+    --orange: #F59E0B;
+    --bg: #F5F3FF;
+    --card: #FFFFFF;
+    --ink: #1E1B2E;
+    --ink-soft: #4B4670;
+    --ink-muted: #9CA3AF;
+    --border: #EDE9FE;
+    --radius: 16px;
+    --shadow: 0 4px 20px rgba(124,58,237,0.1);
   }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Mukta',sans-serif;background:var(--admin);color:var(--text);min-height:100vh;}
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Mukta',sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; }
 
-  /* ── LOGIN ── */
-  .login-wrap{
-    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-    background:linear-gradient(135deg,#0F172A 0%,#1E293B 100%);
+  /* ── AUTH ── */
+  .auth-wrap {
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    background: linear-gradient(135deg,#7C3AED 0%,#5B21B6 100%);
   }
-  .login-card{
-    background:var(--card);border-radius:24px;padding:36px 28px;width:100%;max-width:380px;
-    border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  .auth-card {
+    background:white; border-radius:24px; padding:32px 28px; width:100%; max-width:400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
   }
-  .login-logo{font-family:'Baloo 2',cursive;font-size:32px;font-weight:800;color:var(--accent);text-align:center;margin-bottom:4px;}
-  .login-sub{text-align:center;color:var(--text-muted);font-size:14px;margin-bottom:32px;}
-  .inp{
-    width:100%;padding:13px 16px;background:var(--admin3);border:2px solid var(--border);
-    border-radius:10px;font-family:'Mukta',sans-serif;font-size:16px;color:var(--text);
-    outline:none;margin-bottom:12px;transition:border-color 0.2s;
+  .auth-logo { font-family:'Baloo 2',cursive; font-size:28px; font-weight:800; color:var(--primary); text-align:center; margin-bottom:4px; }
+  .auth-sub { text-align:center; color:var(--ink-muted); font-size:15px; margin-bottom:28px; }
+  .tab-row { display:flex; gap:0; background:var(--bg); border-radius:10px; padding:4px; margin-bottom:24px; }
+  .tab-btn { flex:1; padding:10px; border:none; border-radius:8px; font-family:'Baloo 2',cursive; font-size:15px; font-weight:600; cursor:pointer; background:transparent; color:var(--ink-soft); transition:all 0.2s; }
+  .tab-btn.active { background:var(--primary); color:white; box-shadow:0 2px 10px rgba(124,58,237,0.3); }
+  .form-group { margin-bottom:14px; }
+  .form-group label { display:block; font-size:13px; font-weight:600; color:var(--ink-soft); margin-bottom:6px; }
+  .form-group input {
+    width:100%; padding:13px 16px; border:2px solid var(--border); border-radius:10px;
+    font-family:'Mukta',sans-serif; font-size:16px; color:var(--ink); outline:none; transition:border-color 0.2s;
   }
-  .inp:focus{border-color:var(--accent);}
-  .btn-login{
-    width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),#D97706);
-    border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;
-    color:var(--admin);cursor:pointer;transition:all 0.2s;margin-top:4px;
-  }
-  .btn-login:active{transform:scale(0.98);}
+  .form-group input:focus { border-color:var(--primary); }
+  .btn { width:100%; padding:15px; border:none; border-radius:10px; font-family:'Baloo 2',cursive; font-size:17px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+  .btn-primary { background:linear-gradient(135deg,var(--primary),#5B21B6); color:white; box-shadow:0 4px 16px rgba(124,58,237,0.35); }
+  .btn-primary:active { transform:scale(0.98); }
 
-  /* ── LAYOUT ── */
-  #adminApp{display:none;}
-  .sidebar{
-    position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--admin2);
-    border-right:1px solid var(--border);z-index:100;overflow-y:auto;
-    transition:transform 0.3s;
+  /* ── APP LAYOUT ── */
+  #app { display:none; }
+  .top-bar {
+    background:linear-gradient(135deg,var(--primary),#5B21B6);
+    color:white; padding:14px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+    box-shadow: 0 2px 20px rgba(124,58,237,0.3);
   }
-  .sidebar-logo{
-    padding:20px 20px 16px;border-bottom:1px solid var(--border);
-    font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--accent);
+  .top-bar-title { font-family:'Baloo 2',cursive; font-size:18px; font-weight:700; }
+  .logout-btn { background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+
+  /* ── NAV ── */
+  .bottom-nav {
+    position:fixed; bottom:0; left:0; right:0;
+    background:white; border-top:2px solid var(--border);
+    display:flex; z-index:100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
   }
-  .sidebar-logo span{font-size:12px;color:var(--text-muted);font-weight:400;font-family:'Mukta',sans-serif;display:block;}
-  .nav-link{
-    display:flex;align-items:center;gap:12px;padding:13px 20px;cursor:pointer;
-    color:var(--text-muted);font-size:15px;font-weight:500;border:none;background:none;
-    width:100%;text-align:left;transition:all 0.2s;border-left:3px solid transparent;
-  }
-  .nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05);}
-  .nav-link.active{color:var(--accent);background:rgba(245,158,11,0.1);border-left-color:var(--accent);}
-  .nav-icon{font-size:18px;width:24px;text-align:center;}
-
-  .main{margin-left:240px;min-height:100vh;}
-  .top-bar2{
-    padding:16px 24px;background:var(--admin2);border-bottom:1px solid var(--border);
-    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;
-  }
-  .page-title{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;}
-  .logout2{background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text-muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;}
-
-  .content{padding:24px;}
-
-  /* Mobile sidebar toggle */
-  .ham{display:none;background:none;border:none;color:var(--text);font-size:24px;cursor:pointer;}
-
-  /* ── STAT CARDS ── */
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-  .stat2{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--border);text-align:center;}
-  .stat2-icon{font-size:30px;margin-bottom:8px;}
-  .stat2-num{font-family:'Baloo 2',cursive;font-size:28px;font-weight:800;}
-  .stat2-label{font-size:12px;color:var(--text-muted);margin-top:2px;}
-  .stat2.s-yellow .stat2-num{color:var(--accent);}
-  .stat2.s-green .stat2-num{color:var(--green);}
-  .stat2.s-blue .stat2-num{color:var(--blue);}
-  .stat2.s-purple .stat2-num{color:var(--purple);}
-  .stat2.s-red .stat2-num{color:var(--red);}
-
-  /* ── TABLE ── */
-  .table-wrap{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;}
-  .table-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .table-title{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;}
-  table{width:100%;border-collapse:collapse;}
-  th{padding:12px 16px;text-align:left;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
-  td{padding:13px 16px;font-size:14px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:middle;}
-  tr:last-child td{border-bottom:none;}
-  tr:hover td{background:rgba(255,255,255,0.03);}
-  .overflow-x{overflow-x:auto;}
-
-  /* ── BADGES ── */
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
-  .badge-green{background:rgba(16,185,129,0.15);color:var(--green);}
-  .badge-red{background:rgba(239,68,68,0.15);color:var(--red);}
-  .badge-yellow{background:rgba(245,158,11,0.15);color:var(--accent);}
-  .badge-blue{background:rgba(59,130,246,0.15);color:var(--blue);}
-  .badge-gray{background:rgba(148,163,184,0.15);color:var(--text-muted);}
-
-  /* ── ACTION BTNS ── */
-  .action-btn{padding:6px 12px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;}
-  .ab-edit{background:rgba(59,130,246,0.15);color:var(--blue);}
-  .ab-del{background:rgba(239,68,68,0.15);color:var(--red);}
-  .ab-block{background:rgba(245,158,11,0.15);color:var(--accent);}
-  .ab-green{background:rgba(16,185,129,0.15);color:var(--green);}
-  .ab-gray{background:rgba(148,163,184,0.15);color:var(--text-muted);}
-  .actions-cell{display:flex;gap:6px;flex-wrap:wrap;}
-
-  /* ── ADD FORM ── */
-  .add-form{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin-bottom:20px;}
-  .add-form-title{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;margin-bottom:14px;color:var(--accent);}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-  .form-row.single{grid-template-columns:1fr;}
-  .form-row.triple{grid-template-columns:1fr 1fr 1fr;}
-  .field-group label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
-  .field-group input,.field-group select{
-    width:100%;padding:11px 14px;background:var(--admin3);border:1px solid var(--border);
-    border-radius:8px;font-family:'Mukta',sans-serif;font-size:15px;color:var(--text);outline:none;
-    transition:border-color 0.2s;
-  }
-  .field-group input:focus,.field-group select:focus{border-color:var(--accent);}
-  .field-group select option{background:var(--admin3);}
-  .save-btn{
-    padding:10px 24px;background:linear-gradient(135deg,var(--accent),#D97706);
-    border:none;border-radius:8px;font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;
-    color:var(--admin);cursor:pointer;transition:all 0.2s;
-  }
-  .save-btn:active{transform:scale(0.97);}
+  .nav-item { flex:1; padding:12px 4px 8px; text-align:center; cursor:pointer; transition:all 0.2s; border:none; background:none; }
+  .nav-item .nav-icon { font-size:22px; display:block; }
+  .nav-item .nav-label { font-size:11px; font-weight:600; color:var(--ink-muted); margin-top:2px; display:block; }
+  .nav-item.active .nav-label { color:var(--primary); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 2px 4px rgba(124,58,237,0.4)); }
 
   /* ── SCREENS ── */
-  .page{display:none;}
-  .page.active{display:block;}
+  .screen { display:none; padding:16px 16px 90px; }
+  .screen.active { display:block; }
 
-  /* ── FILTER BAR ── */
-  .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
-  .filter-select{
-    padding:8px 14px;background:var(--card);border:1px solid var(--border);
-    border-radius:8px;color:var(--text);font-size:14px;outline:none;cursor:pointer;
+  /* ── STAT CARDS ── */
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+  .stat-card {
+    background:white; border-radius:var(--radius); padding:16px;
+    box-shadow:var(--shadow); border:1px solid var(--border); text-align:center;
   }
-  .filter-select option{background:var(--admin3);}
+  .stat-icon { font-size:28px; margin-bottom:6px; }
+  .stat-num { font-family:'Baloo 2',cursive; font-size:26px; font-weight:800; color:var(--primary); }
+  .stat-label { font-size:12px; color:var(--ink-muted); margin-top:2px; }
 
-  /* Toast */
-  .toast2{
-    position:fixed;bottom:24px;right:24px;background:var(--admin2);color:var(--text);
-    padding:12px 20px;border-radius:10px;font-size:14px;opacity:0;
-    transition:all 0.3s;z-index:999;border:1px solid var(--border);
-    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  /* ── SECTION ── */
+  .section-title { font-family:'Baloo 2',cursive; font-size:18px; font-weight:700; margin-bottom:12px; color:var(--ink); }
+
+  /* ── PRODUCT CARD ── */
+  .item-card {
+    background:white; border-radius:var(--radius); padding:16px; margin-bottom:12px;
+    box-shadow:var(--shadow); border:1px solid var(--border);
+    display:flex; align-items:center; gap:12px;
   }
-  .toast2.show{opacity:1;}
+  .item-icon { width:48px; height:48px; background:var(--primary-glow); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .item-info { flex:1; }
+  .item-name { font-family:'Baloo 2',cursive; font-size:16px; font-weight:700; }
+  .item-meta { font-size:13px; color:var(--ink-muted); }
+  .item-price { font-size:17px; font-weight:700; color:var(--primary); }
+  .item-actions { display:flex; flex-direction:column; gap:6px; }
+  .icon-btn {
+    width:34px; height:34px; border-radius:8px; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+  }
+  .edit-btn { background:#EDE9FE; }
+  .del-btn { background:#FEE2E2; }
 
-  /* Mobile */
-  @media(max-width:768px){
-    .sidebar{transform:translateX(-100%);}
-    .sidebar.open{transform:translateX(0);}
-    .main{margin-left:0;}
-    .ham{display:block;}
-    .stats-row{grid-template-columns:1fr 1fr;}
-    .form-row{grid-template-columns:1fr;}
-    .form-row.triple{grid-template-columns:1fr 1fr;}
+  /* ── BOOKING CARD ── */
+  .booking-card {
+    background:white; border-radius:var(--radius); padding:16px; margin-bottom:12px;
+    box-shadow:var(--shadow); border:1px solid var(--border);
+  }
+  .booking-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .booking-id { font-family:'Baloo 2',cursive; font-size:14px; font-weight:700; color:var(--primary); }
+  .status-badge {
+    padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;
+  }
+  .status-pending { background:#FEF3C7; color:#D97706; }
+  .status-ready { background:#D1FAE5; color:#065F46; }
+  .status-completed { background:#DBEAFE; color:#1D4ED8; }
+  .status-cancelled { background:#FEE2E2; color:#991B1B; }
+  .booking-row { display:flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-soft); margin-bottom:4px; }
+  .trust-stars { color:#F59E0B; font-size:14px; }
+  .timer-text { font-family:'Baloo 2',cursive; font-weight:700; color:var(--orange); }
+  .status-actions { display:flex; gap:8px; margin-top:12px; }
+  .status-btn {
+    flex:1; padding:9px; border:none; border-radius:8px; font-family:'Baloo 2',cursive;
+    font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;
+  }
+  .btn-ready { background:#D1FAE5; color:#065F46; }
+  .btn-done { background:#DBEAFE; color:#1D4ED8; }
+
+  /* ── ADD PRODUCT MODAL ── */
+  .modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    z-index:200; align-items:flex-end; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-sheet {
+    background:white; border-radius:24px 24px 0 0; padding:28px 24px 40px;
+    width:100%; max-height:85vh; overflow-y:auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+  .modal-title { font-family:'Baloo 2',cursive; font-size:20px; font-weight:800; margin-bottom:20px; }
+  .modal-close { float:right; background:none; border:none; font-size:22px; cursor:pointer; color:var(--ink-muted); }
+
+  .input-field {
+    width:100%; padding:13px 16px; border:2px solid var(--border); border-radius:10px;
+    font-family:'Mukta',sans-serif; font-size:16px; color:var(--ink); outline:none;
+    margin-bottom:12px; appearance:none;
+  }
+  .input-field:focus { border-color:var(--primary); }
+
+  .fab {
+    position:fixed; bottom:80px; right:20px; width:56px; height:56px;
+    background:linear-gradient(135deg,var(--primary),#5B21B6);
+    border:none; border-radius:50%; color:white; font-size:28px;
+    cursor:pointer; box-shadow:0 4px 20px rgba(124,58,237,0.45);
+    display:flex; align-items:center; justify-content:center;
+    z-index:50; transition:transform 0.2s;
+  }
+  .fab:active { transform:scale(0.92); }
+
+  .empty { text-align:center; padding:48px 16px; color:var(--ink-muted); }
+  .empty .e-icon { font-size:48px; margin-bottom:12px; }
+
+  .toast {
+    position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:white; padding:11px 22px; border-radius:50px;
+    font-size:14px; opacity:0; transition:all 0.3s; z-index:999; white-space:nowrap;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .shop-banner {
+    background:linear-gradient(135deg,var(--primary),#5B21B6);
+    color:white; border-radius:var(--radius); padding:20px; margin-bottom:16px;
+  }
+  .shop-banner h2 { font-family:'Baloo 2',cursive; font-size:20px; font-weight:800; }
+  .shop-banner p { opacity:0.85; font-size:14px; margin-top:4px; }
+
+  .no-shop-card {
+    background:white; border-radius:var(--radius); padding:32px; text-align:center;
+    box-shadow:var(--shadow);
   }
 
-  .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
-  .mobile-overlay.open{display:block;}
-
-  .empty-row{text-align:center;padding:32px;color:var(--text-muted);}
+  select.input-field { background:white; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="loginWrap" class="login-wrap">
-  <div class="login-card">
-    <div class="login-logo">🛡️ Admin Panel</div>
-    <div class="login-sub">Smart Kirana — Full Control</div>
-    <input class="inp" type="text" id="adminUser" placeholder="Username" />
-    <input class="inp" type="password" id="adminPass" placeholder="Password" />
-    <button class="btn-login" onclick="adminLogin()">🔓 Login</button>
-  </div>
-</div>
-
-<!-- ADMIN APP -->
-<div id="adminApp">
-  <div class="mobile-overlay" id="overlay" onclick="closeSidebar()"></div>
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-logo">🛡️ Admin Panel<span>Smart Kirana</span></div>
-    <button class="nav-link active" onclick="showPage('pgDash','📊 Dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
-    <button class="nav-link" onclick="showPage('pgLocations','📍 Locations',this)"><span class="nav-icon">📍</span> Locations</button>
-    <button class="nav-link" onclick="showPage('pgShops','🏪 Shops',this)"><span class="nav-icon">🏪</span> Shops</button>
-    <button class="nav-link" onclick="showPage('pgSellers','👨‍💼 Sellers',this)"><span class="nav-icon">👨‍💼</span> Sellers</button>
-    <button class="nav-link" onclick="showPage('pgBookings','📦 Bookings',this)"><span class="nav-icon">📦</span> Bookings</button>
-    <button class="nav-link" onclick="showPage('pgTrust','⭐ Trust',this)"><span class="nav-icon">⭐</span> Trust Scores</button>
-  </div>
-
-  <div class="main">
-    <div class="top-bar2">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="ham" onclick="toggleSidebar()">☰</button>
-        <div class="page-title" id="pageTitle">📊 Dashboard</div>
-      </div>
-      <button class="logout2" onclick="adminLogout()">Logout</button>
+<!-- AUTH -->
+<div id="authWrap" class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">🏪 Seller Panel</div>
+    <div class="auth-sub">Smart Kirana — Seller Dashboard</div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn" onclick="switchTab('register')">Register</button>
     </div>
 
-    <div class="content">
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="seller@example.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"/></div>
+      <button class="btn btn-primary" onclick="doLogin()">🔓 Login करें</button>
+    </div>
 
-      <!-- DASHBOARD -->
-      <div class="page active" id="pgDash">
-        <div class="stats-row" id="dashStats">
-          <div class="stat2 s-yellow"><div class="stat2-icon">🏪</div><div class="stat2-num">—</div><div class="stat2-label">Total Shops</div></div>
-          <div class="stat2 s-green"><div class="stat2-icon">📦</div><div class="stat2-num">—</div><div class="stat2-label">Total Bookings</div></div>
-          <div class="stat2 s-blue"><div class="stat2-icon">📍</div><div class="stat2-num">—</div><div class="stat2-label">Active Locations</div></div>
-          <div class="stat2 s-purple"><div class="stat2-icon">⏳</div><div class="stat2-num">—</div><div class="stat2-label">Pending</div></div>
-          <div class="stat2 s-red"><div class="stat2-icon">👨‍💼</div><div class="stat2-num">—</div><div class="stat2-label">Sellers</div></div>
-          <div class="stat2 s-yellow"><div class="stat2-icon">✅</div><div class="stat2-num">—</div><div class="stat2-label">Active Today</div></div>
-        </div>
-        <div class="table-wrap">
-          <div class="table-head"><span class="table-title">📦 Recent Bookings</span></div>
-          <div class="overflow-x"><table id="dashBookingsTable"><tbody><tr><td class="empty-row">Loading...</td></tr></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- LOCATIONS -->
-      <div class="page" id="pgLocations">
-        <div class="add-form">
-          <div class="add-form-title">➕ नई Location जोड़ें</div>
-          <div class="form-row">
-            <div class="field-group"><label>Location का नाम</label><input type="text" id="locName" placeholder="जैसे: Agra" /></div>
-            <div class="field-group"><label>Type</label>
-              <select id="locType"><option value="city">City (शहर)</option><option value="town">Town (कस्बा)</option><option value="village">Village (गाँव)</option></select>
-            </div>
-          </div>
-          <button class="save-btn" onclick="addLocation()">➕ Add Location</button>
-        </div>
-        <div class="table-wrap">
-          <div class="table-head"><span class="table-title">📍 सभी Locations</span><span id="locCount" class="badge badge-yellow">—</span></div>
-          <div class="overflow-x"><table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead><tbody id="locTable"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- SHOPS -->
-      <div class="page" id="pgShops">
-        <div class="add-form">
-          <div class="add-form-title">➕ नई Shop जोड़ें</div>
-          <div class="form-row">
-            <div class="field-group"><label>Shop का नाम</label><input type="text" id="shopName" placeholder="Ram Kirana Store" /></div>
-            <div class="field-group"><label>Location</label><select id="shopLoc"><option value="">-- Select --</option></select></div>
-          </div>
-          <div class="form-row">
-            <div class="field-group"><label>Phone</label><input type="tel" id="shopPhone" placeholder="10 अंक" /></div>
-            <div class="field-group"><label>UPI ID (optional)</label><input type="text" id="shopUpi" placeholder="shop@upi" /></div>
-          </div>
-          <button class="save-btn" onclick="addShop()">➕ Add Shop</button>
-        </div>
-        <div class="table-wrap">
-          <div class="table-head"><span class="table-title">🏪 सभी Shops</span><span id="shopCount" class="badge badge-yellow">—</span></div>
-          <div class="overflow-x"><table><thead><tr><th>Shop</th><th>Location</th><th>Phone</th><th>UPI</th><th>Status</th><th>Actions</th></tr></thead><tbody id="shopTable"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- SELLERS -->
-      <div class="page" id="pgSellers">
-        <div class="add-form">
-          <div class="add-form-title">➕ नया Seller बनाएं</div>
-          <div class="form-row">
-            <div class="field-group"><label>नाम</label><input type="text" id="selName" placeholder="Seller Name" /></div>
-            <div class="field-group"><label>Email</label><input type="email" id="selEmail" placeholder="seller@email.com" /></div>
-          </div>
-          <div class="form-row">
-            <div class="field-group"><label>Phone</label><input type="tel" id="selPhone" placeholder="10 अंक" /></div>
-            <div class="field-group"><label>Password</label><input type="password" id="selPass" placeholder="••••••••" /></div>
-          </div>
-          <button class="save-btn" onclick="addSeller()">➕ Create Seller</button>
-        </div>
-        <div class="table-wrap">
-          <div class="table-head"><span class="table-title">👨‍💼 सभी Sellers</span></div>
-          <div class="overflow-x"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Shop</th><th>Status</th><th>Actions</th></tr></thead><tbody id="sellerTable"></tbody></table></div>
-        </div>
-
-        <!-- Assign Shop Modal inline -->
-        <div id="assignShopPanel" style="display:none;" class="add-form">
-          <div class="add-form-title">🏪 Shop Assign करें</div>
-          <div class="form-row single">
-            <div class="field-group"><label>Shop चुनें</label><select id="assignShopSel"><option value="">-- Select Shop --</option></select></div>
-          </div>
-          <div style="display:flex;gap:10px">
-            <button class="save-btn" onclick="doAssignShop()">✅ Assign</button>
-            <button class="save-btn" style="background:var(--admin3);color:var(--text-muted);" onclick="document.getElementById('assignShopPanel').style.display='none'">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Reset Password inline -->
-        <div id="resetPassPanel" style="display:none;" class="add-form">
-          <div class="add-form-title">🔑 Password Reset</div>
-          <div class="form-row single">
-            <div class="field-group"><label>नया Password</label><input type="password" id="newPassInput" placeholder="नया पासवर्ड" /></div>
-          </div>
-          <div style="display:flex;gap:10px">
-            <button class="save-btn" onclick="doResetPass()">✅ Reset</button>
-            <button class="save-btn" style="background:var(--admin3);color:var(--text-muted);" onclick="document.getElementById('resetPassPanel').style.display='none'">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- BOOKINGS -->
-      <div class="page" id="pgBookings">
-        <div class="filter-bar">
-          <select class="filter-select" id="bFilterStatus" onchange="loadBookings()">
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="ready">Ready</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <select class="filter-select" id="bFilterShop" onchange="loadBookings()">
-            <option value="">All Shops</option>
-          </select>
-        </div>
-        <div class="table-wrap">
-          <div class="table-head"><span class="table-title">📦 सभी Bookings</span><span id="bookingCount" class="badge badge-yellow">—</span></div>
-          <div class="overflow-x"><table><thead><tr><th>ID</th><th>Customer</th><th>Phone</th><th>Shop</th><th>Product</th><th>Qty</th><th>Trust</th><th>Status</th><th>Expires</th><th>Action</th></tr></thead><tbody id="bookingTable"></tbody></table></div>
-        </div>
-      </div>
-
-      <!-- TRUST -->
-      <div class="page" id="pgTrust">
-        <div class="table-wrap">
-          <div class="table-head"><span class="table-title">⭐ Customer Trust Scores</span></div>
-          <div class="overflow-x"><table><thead><tr><th>Customer</th><th>Phone</th><th>Score</th><th>Bookings</th><th>Completed</th><th>No-shows</th><th>Action</th></tr></thead><tbody id="trustTable"></tbody></table></div>
-        </div>
-      </div>
-
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none">
+      <div class="form-group"><label>पूरा नाम</label><input type="text" id="regName" placeholder="आपका नाम"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@example.com"/></div>
+      <div class="form-group"><label>फोन</label><input type="tel" id="regPhone" placeholder="10 अंक"/></div>
+      <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="••••••••"/></div>
+      <button class="btn btn-primary" onclick="doRegister()">✅ Register करें</button>
     </div>
   </div>
 </div>
 
-<div class="toast2" id="toast2"></div>
+<!-- APP -->
+<div id="app">
+  <div class="top-bar">
+    <div class="top-bar-title" id="topBarTitle">📊 Dashboard</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="screen active" id="screenDash">
+    <div id="shopBanner"></div>
+    <div class="stats-grid" id="dashStats"></div>
+    <div class="section-title">📦 हाल की बुकिंग</div>
+    <div id="recentBookings"></div>
+  </div>
+
+  <!-- Products -->
+  <div class="screen" id="screenProducts">
+    <div class="section-title">🛒 मेरे उत्पाद</div>
+    <div id="productsList"></div>
+  </div>
+  <button class="fab" id="fabAdd" onclick="openAddProduct()" style="display:none">+</button>
+
+  <!-- Bookings -->
+  <div class="screen" id="screenBookings">
+    <div class="section-title">📋 सभी बुकिंग</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
+      <button class="status-btn btn-ready" style="flex:none;padding:8px 16px;" onclick="filterBookings('all')">सभी</button>
+      <button class="status-btn" style="flex:none;padding:8px 16px;background:#FEF3C7;color:#D97706;" onclick="filterBookings('pending')">Pending</button>
+      <button class="status-btn btn-ready" style="flex:none;padding:8px 16px;" onclick="filterBookings('ready')">Ready</button>
+      <button class="status-btn btn-done" style="flex:none;padding:8px 16px;" onclick="filterBookings('completed')">Completed</button>
+    </div>
+    <div id="bookingsList"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="switchScreen('screenDash','📊 Dashboard',this)">
+      <span class="nav-icon">📊</span><span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item" onclick="switchScreen('screenProducts','🛒 Products',this)">
+      <span class="nav-icon">🛒</span><span class="nav-label">Products</span>
+    </button>
+    <button class="nav-item" onclick="switchScreen('screenBookings','📋 Bookings',this)">
+      <span class="nav-icon">📋</span><span class="nav-label">Bookings</span>
+    </button>
+  </div>
+</div>
+
+<!-- ADD/EDIT PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">➕ नया उत्पाद जोड़ें</div>
+    <input class="input-field" id="pName" placeholder="उत्पाद का नाम (जैसे: चावल)" />
+    <input class="input-field" id="pPrice" type="number" placeholder="कीमत ₹" />
+    <input class="input-field" id="pStock" type="number" placeholder="स्टॉक" />
+    <select class="input-field" id="pUnit">
+      <option value="kg">किलोग्राम (kg)</option>
+      <option value="piece">नग (piece)</option>
+      <option value="litre">लीटर (litre)</option>
+      <option value="packet">पैकेट</option>
+      <option value="dozen">दर्जन</option>
+    </select>
+    <button class="btn btn-primary" onclick="saveProduct()">💾 सेव करें</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const API = '/api';
-let adminToken = sessionStorage.getItem('adminToken');
-let selectedSellerId = null;
-let allShops = [];
+let token = localStorage.getItem('sellerToken');
+let sellerData = JSON.parse(localStorage.getItem('sellerData') || '{}');
+let allBookings = [];
+let editingProduct = null;
 
-if (adminToken) initAdmin();
+if (token) initApp();
 
-async function adminLogin() {
-  const u = document.getElementById('adminUser').value.trim();
-  const p = document.getElementById('adminPass').value;
-  if (!u||!p) return toast('⚠️ सभी fields भरें');
-  try {
-    const res = await post('/auth/admin/login',{username:u,password:p});
-    if (res.error) return toast('❌ '+res.error);
-    sessionStorage.setItem('adminToken', res.token);
-    adminToken = res.token;
-    initAdmin();
-  } catch(e){ toast('❌ Login failed'); }
+function switchTab(t) {
+  document.getElementById('loginForm').style.display = t==='login'?'block':'none';
+  document.getElementById('registerForm').style.display = t==='register'?'block':'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(t==='login'&&i===0)||(t==='register'&&i===1)));
 }
 
-function adminLogout() {
-  sessionStorage.removeItem('adminToken');
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email||!pass) return toast('⚠️ सभी फील्ड भरें');
+  try {
+    const res = await post('/auth/seller/login',{email,password:pass});
+    if (res.error) return toast('❌ '+res.error);
+    localStorage.setItem('sellerToken', res.token);
+    localStorage.setItem('sellerData', JSON.stringify(res.seller));
+    token = res.token; sellerData = res.seller;
+    initApp();
+  } catch(e){ toast('❌ लॉगिन विफल'); }
+}
+
+async function doRegister() {
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  const pass=document.getElementById('regPass').value;
+  if (!name||!email||!phone||!pass) return toast('⚠️ सभी फील्ड भरें');
+  try {
+    const res = await post('/auth/seller/register',{name,email,phone,password:pass});
+    if (res.error) return toast('❌ '+res.error);
+    localStorage.setItem('sellerToken', res.token);
+    localStorage.setItem('sellerData', JSON.stringify(res.seller));
+    token = res.token; sellerData = res.seller;
+    initApp();
+  } catch(e){ toast('❌ Registration विफल'); }
+}
+
+function logout() {
+  localStorage.removeItem('sellerToken');
+  localStorage.removeItem('sellerData');
   location.reload();
 }
 
-async function initAdmin() {
-  document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById('adminApp').style.display = 'block';
+async function initApp() {
+  document.getElementById('authWrap').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
   loadDashboard();
-  loadShopsForFilters();
 }
 
-// ── DASHBOARD ──
 async function loadDashboard() {
+  // Shop banner
+  const shopId = sellerData.shopId;
+  if (shopId) {
+    try {
+      const shop = await get(`/shops/${shopId}`);
+      document.getElementById('shopBanner').innerHTML = `
+        <div class="shop-banner">
+          <h2>🏪 ${shop.name}</h2>
+          <p>📞 ${shop.phone} ${shop.upiId?'· 💳 '+shop.upiId:''}</p>
+        </div>`;
+      document.getElementById('fabAdd').style.display = 'flex';
+    } catch(e){}
+  } else {
+    document.getElementById('shopBanner').innerHTML = `
+      <div class="no-shop-card">
+        <div style="font-size:40px;margin-bottom:12px">⏳</div>
+        <div style="font-family:'Baloo 2',cursive;font-size:18px;font-weight:700;">Shop Assigned नहीं हुई</div>
+        <p style="color:var(--ink-muted);margin-top:8px;font-size:14px;">Admin आपको जल्द shop assign करेगा</p>
+      </div>`;
+  }
+
+  // Load bookings for stats
   try {
-    const stats = await aGet('/admin/stats');
-    const nums = document.querySelectorAll('.stat2-num');
-    nums[0].textContent = stats.totalShops;
-    nums[1].textContent = stats.totalBookings;
-    nums[2].textContent = stats.activeLocations;
-    nums[3].textContent = stats.pendingBookings;
-    nums[4].textContent = stats.sellers;
-    nums[5].textContent = stats.pendingBookings;
+    const bookings = await authGet('/bookings/seller/mine');
+    allBookings = bookings;
+    const pending = bookings.filter(b=>b.status==='pending').length;
+    const ready = bookings.filter(b=>b.status==='ready').length;
+    const done = bookings.filter(b=>b.status==='completed').length;
+    document.getElementById('dashStats').innerHTML = `
+      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-num">${pending}</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-icon">✅</div><div class="stat-num">${ready}</div><div class="stat-label">Ready</div></div>
+      <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-num">${done}</div><div class="stat-label">Completed</div></div>
+      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-num">${bookings.length}</div><div class="stat-label">Total</div></div>`;
 
-    const bookings = await aGet('/bookings/admin/all?limit=10');
-    const tbody = document.querySelector('#dashBookingsTable tbody');
-    tbody.innerHTML = bookings.slice(0,8).map(b=>`
-      <tr>
-        <td><span style="font-family:'Baloo 2',cursive;font-weight:700;color:var(--accent)">${b.bookingId}</span></td>
-        <td>${b.customerName}</td>
-        <td>${b.phone}</td>
-        <td>${b.shopId?.name||'—'}</td>
-        <td>${statusBadge(b.status)}</td>
-      </tr>`).join('') || '<tr><td colspan="5" class="empty-row">No bookings</td></tr>';
-  } catch(e){ console.error(e); }
-}
-
-// ── LOCATIONS ──
-async function loadLocations() {
-  try {
-    const locs = await aGet('/locations/all');
-    document.getElementById('locCount').textContent = locs.length;
-    document.getElementById('locTable').innerHTML = locs.map(l=>`
-      <tr>
-        <td style="font-weight:600">${l.name}</td>
-        <td>${typeBadge(l.type)}</td>
-        <td>${l.isActive?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Inactive</span>'}</td>
-        <td class="actions-cell">
-          <button class="action-btn ${l.isActive?'ab-block':'ab-green'}" onclick="toggleLocation('${l._id}',${!l.isActive})">${l.isActive?'Deactivate':'Activate'}</button>
-          <button class="action-btn ab-del" onclick="deleteLocation('${l._id}')">🗑️ Delete</button>
-        </td>
-      </tr>`).join('') || '<tr><td colspan="4" class="empty-row">No locations</td></tr>';
-
-    // Populate shop location dropdown
-    const shopLocSel = document.getElementById('shopLoc');
-    shopLocSel.innerHTML = '<option value="">-- Select --</option>' + locs.filter(l=>l.isActive).map(l=>`<option value="${l._id}">${l.name}</option>`).join('');
-  } catch(e){ toast('❌ Locations load failed'); }
-}
-
-async function addLocation() {
-  const name=document.getElementById('locName').value.trim();
-  const type=document.getElementById('locType').value;
-  if (!name) return toast('⚠️ नाम दर्ज करें');
-  try {
-    await aPost('/locations',{name,type});
-    toast('✅ Location जोड़ी गई!');
-    document.getElementById('locName').value='';
-    loadLocations();
-  } catch(e){ toast('❌ Failed'); }
-}
-
-async function toggleLocation(id, val) {
-  await aPut(`/locations/${id}`,{isActive:val});
-  toast('✅ Updated'); loadLocations();
-}
-
-async function deleteLocation(id) {
-  if (!confirm('Delete this location?')) return;
-  await aDel(`/locations/${id}`);
-  toast('🗑️ Deleted'); loadLocations();
-}
-
-// ── SHOPS ──
-async function loadShops() {
-  try {
-    const shops = await aGet('/shops');
-    allShops = shops;
-    document.getElementById('shopCount').textContent = shops.length;
-    document.getElementById('shopTable').innerHTML = shops.map(s=>`
-      <tr>
-        <td style="font-weight:600">${s.name}</td>
-        <td>${s.locationId?.name||'—'}</td>
-        <td>${s.phone}</td>
-        <td>${s.upiId||'—'}</td>
-        <td>${s.isActive?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Inactive</span>'}</td>
-        <td class="actions-cell">
-          <button class="action-btn ${s.isActive?'ab-block':'ab-green'}" onclick="toggleShop('${s._id}',${!s.isActive})">${s.isActive?'Deactivate':'Activate'}</button>
-          <button class="action-btn ab-del" onclick="deleteShop('${s._id}')">🗑️</button>
-        </td>
-      </tr>`).join('') || '<tr><td colspan="6" class="empty-row">No shops</td></tr>';
-  } catch(e){ toast('❌ Shops load failed'); }
-}
-
-async function addShop() {
-  const name=document.getElementById('shopName').value.trim();
-  const locationId=document.getElementById('shopLoc').value;
-  const phone=document.getElementById('shopPhone').value.trim();
-  const upiId=document.getElementById('shopUpi').value.trim();
-  if (!name||!locationId||!phone) return toast('⚠️ नाम, location, phone जरूरी है');
-  try {
-    await aPost('/shops',{name,locationId,phone,upiId});
-    toast('✅ Shop जोड़ी गई!');
-    ['shopName','shopPhone','shopUpi'].forEach(id=>document.getElementById(id).value='');
-    loadShops();
-  } catch(e){ toast('❌ Failed'); }
-}
-
-async function toggleShop(id,val) {
-  await aPut(`/shops/${id}`,{isActive:val});
-  toast('✅ Updated'); loadShops();
-}
-
-async function deleteShop(id) {
-  if (!confirm('Delete this shop?')) return;
-  await aDel(`/shops/${id}`);
-  toast('🗑️ Deleted'); loadShops();
-}
-
-async function loadShopsForFilters() {
-  try {
-    const shops = await aGet('/shops');
-    allShops = shops;
-    const sel = document.getElementById('bFilterShop');
-    sel.innerHTML = '<option value="">All Shops</option>' + shops.map(s=>`<option value="${s._id}">${s.name}</option>`).join('');
-    const assignSel = document.getElementById('assignShopSel');
-    assignSel.innerHTML = '<option value="">-- Select Shop --</option>' + shops.map(s=>`<option value="${s._id}">${s.name}</option>`).join('');
+    const recent = bookings.slice(0,5);
+    document.getElementById('recentBookings').innerHTML = recent.length
+      ? recent.map(b=>bookingCard(b,true)).join('')
+      : '<div class="empty"><div class="e-icon">📭</div><p>कोई बुकिंग नहीं</p></div>';
   } catch(e){}
 }
 
-// ── SELLERS ──
-async function loadSellers() {
+async function loadProducts() {
+  if (!sellerData.shopId) {
+    document.getElementById('productsList').innerHTML = '<div class="empty"><div class="e-icon">🏪</div><p>पहले shop assign होनी चाहिए</p></div>';
+    return;
+  }
   try {
-    const sellers = await aGet('/admin/sellers');
-    document.getElementById('sellerTable').innerHTML = sellers.map(s=>`
-      <tr>
-        <td style="font-weight:600">${s.name}</td>
-        <td>${s.email}</td>
-        <td>${s.phone}</td>
-        <td>${s.shopId?.name||'<span style="color:var(--text-muted)">Not assigned</span>'}</td>
-        <td>${s.isBlocked?'<span class="badge badge-red">Blocked</span>':'<span class="badge badge-green">Active</span>'}</td>
-        <td class="actions-cell">
-          <button class="action-btn ${s.isBlocked?'ab-green':'ab-block'}" onclick="toggleBlock('${s._id}')">${s.isBlocked?'Unblock':'Block'}</button>
-          <button class="action-btn ab-edit" onclick="showAssignShop('${s._id}')">Assign Shop</button>
-          <button class="action-btn ab-gray" onclick="showResetPass('${s._id}')">Reset Pass</button>
-        </td>
-      </tr>`).join('') || '<tr><td colspan="6" class="empty-row">No sellers</td></tr>';
-  } catch(e){ toast('❌ Sellers load failed'); }
+    const products = await get(`/products/shop/${sellerData.shopId}`);
+    document.getElementById('productsList').innerHTML = products.length
+      ? products.map(p=>`
+        <div class="item-card">
+          <div class="item-icon">🛒</div>
+          <div class="item-info">
+            <div class="item-name">${p.name}</div>
+            <div class="item-meta">स्टॉक: ${p.stock} ${p.unit}</div>
+            <div class="item-price">₹${p.price}</div>
+          </div>
+          <div class="item-actions">
+            <button class="icon-btn edit-btn" onclick='openEditProduct(${JSON.stringify(p)})'>✏️</button>
+            <button class="icon-btn del-btn" onclick="deleteProduct('${p._id}')">🗑️</button>
+          </div>
+        </div>`).join('')
+      : '<div class="empty"><div class="e-icon">📦</div><p>कोई उत्पाद नहीं — + से जोड़ें</p></div>';
+  } catch(e){ toast('❌ उत्पाद लोड विफल'); }
 }
 
-async function addSeller() {
-  const name=document.getElementById('selName').value.trim();
-  const email=document.getElementById('selEmail').value.trim();
-  const phone=document.getElementById('selPhone').value.trim();
-  const password=document.getElementById('selPass').value;
-  if (!name||!email||!phone||!password) return toast('⚠️ सभी fields भरें');
-  try {
-    await aPost('/admin/sellers',{name,email,phone,password});
-    toast('✅ Seller created!');
-    ['selName','selEmail','selPhone','selPass'].forEach(id=>document.getElementById(id).value='');
-    loadSellers();
-  } catch(e){ toast('❌ Failed'); }
-}
-
-async function toggleBlock(id) {
-  await aPut(`/admin/sellers/${id}/block`,{});
-  toast('✅ Updated'); loadSellers();
-}
-
-function showAssignShop(sellerId) {
-  selectedSellerId = sellerId;
-  document.getElementById('assignShopPanel').style.display='block';
-  document.getElementById('resetPassPanel').style.display='none';
-  document.getElementById('assignShopPanel').scrollIntoView({behavior:'smooth'});
-}
-
-async function doAssignShop() {
-  const shopId = document.getElementById('assignShopSel').value;
-  await aPut(`/admin/sellers/${selectedSellerId}/assign-shop`,{shopId});
-  toast('✅ Shop assigned!');
-  document.getElementById('assignShopPanel').style.display='none';
-  loadSellers();
-}
-
-function showResetPass(sellerId) {
-  selectedSellerId = sellerId;
-  document.getElementById('resetPassPanel').style.display='block';
-  document.getElementById('assignShopPanel').style.display='none';
-  document.getElementById('resetPassPanel').scrollIntoView({behavior:'smooth'});
-}
-
-async function doResetPass() {
-  const pass = document.getElementById('newPassInput').value;
-  if (!pass) return toast('⚠️ Password दर्ज करें');
-  await aPut(`/admin/sellers/${selectedSellerId}/reset-password`,{newPassword:pass});
-  toast('✅ Password reset!');
-  document.getElementById('resetPassPanel').style.display='none';
-}
-
-// ── BOOKINGS ──
 async function loadBookings() {
-  const status = document.getElementById('bFilterStatus').value;
-  const shopId = document.getElementById('bFilterShop').value;
-  let url = '/bookings/admin/all?';
-  if (status) url += `status=${status}&`;
-  if (shopId) url += `shopId=${shopId}`;
   try {
-    const bookings = await aGet(url);
-    document.getElementById('bookingCount').textContent = bookings.length;
-    document.getElementById('bookingTable').innerHTML = bookings.map(b=>{
-      const mins = Math.max(0,Math.floor((new Date(b.expiresAt)-Date.now())/60000));
-      return `<tr>
-        <td><span style="font-family:'Baloo 2',cursive;font-weight:700;color:var(--accent);font-size:12px">${b.bookingId}</span></td>
-        <td>${b.customerName}</td>
-        <td>${b.phone}</td>
-        <td>${b.shopId?.name||'—'}</td>
-        <td>${b.productId?.name||'—'}</td>
-        <td>${b.quantity}</td>
-        <td><span style="color:var(--accent)">⭐${b.trustScoreSnapshot||5}</span></td>
-        <td>${statusBadge(b.status)}</td>
-        <td style="color:${mins<10?'var(--red)':'var(--text-muted)'};font-size:13px">${mins}m</td>
-        <td>${b.status!=='cancelled'&&b.status!=='completed'?`<button class="action-btn ab-del" onclick="cancelBooking('${b._id}')">Cancel</button>`:'—'}</td>
-      </tr>`;
-    }).join('') || '<tr><td colspan="10" class="empty-row">No bookings</td></tr>';
-  } catch(e){ toast('❌ Bookings load failed'); }
+    const bookings = await authGet('/bookings/seller/mine');
+    allBookings = bookings;
+    renderBookings(bookings);
+  } catch(e){ toast('❌ बुकिंग लोड विफल'); }
 }
 
-async function cancelBooking(id) {
-  if (!confirm('Force cancel this booking?')) return;
-  await aPut(`/bookings/${id}/cancel`,{});
-  toast('✅ Cancelled'); loadBookings();
+function filterBookings(status) {
+  const list = status==='all' ? allBookings : allBookings.filter(b=>b.status===status);
+  renderBookings(list);
 }
 
-// ── TRUST ──
-async function loadTrust() {
+function renderBookings(bookings) {
+  document.getElementById('bookingsList').innerHTML = bookings.length
+    ? bookings.map(b=>bookingCard(b,false)).join('')
+    : '<div class="empty"><div class="e-icon">📭</div><p>कोई बुकिंग नहीं</p></div>';
+}
+
+function bookingCard(b, mini) {
+  const trust = b.trustScoreSnapshot || 5;
+  const stars = '⭐'.repeat(Math.min(5,Math.max(1,Math.round(trust/2))));
+  const timeLeft = Math.max(0, Math.floor((new Date(b.expiresAt)-Date.now())/60000));
+  const statusClass = `status-${b.status}`;
+  const statusText = {pending:'⏳ Pending',ready:'✅ Ready',completed:'🏆 Done',cancelled:'❌ Cancelled'}[b.status];
+  return `
+    <div class="booking-card">
+      <div class="booking-header">
+        <span class="booking-id">${b.bookingId}</span>
+        <span class="status-badge ${statusClass}">${statusText}</span>
+      </div>
+      <div class="booking-row">👤 ${b.customerName} &nbsp;|&nbsp; 📞 ${b.phone}</div>
+      <div class="booking-row">
+        <span class="trust-stars">${stars}</span> Trust: ${trust}
+        &nbsp;|&nbsp; ⏳ <span class="timer-text">${timeLeft} मिनट</span>
+      </div>
+      <div class="booking-row">📦 ${b.productId?.name||'—'} × ${b.quantity}</div>
+      ${!mini && b.status==='pending' ? `
+        <div class="status-actions">
+          <button class="status-btn btn-ready" onclick="updateStatus('${b._id}','ready')">✅ Mark Ready</button>
+          <button class="status-btn btn-done" onclick="updateStatus('${b._id}','completed')">🏆 Completed</button>
+        </div>` : ''}
+      ${!mini && b.status==='ready' ? `
+        <div class="status-actions">
+          <button class="status-btn btn-done" onclick="updateStatus('${b._id}','completed')" style="flex:1">🏆 Mark Completed</button>
+        </div>` : ''}
+    </div>`;
+}
+
+async function updateStatus(id, status) {
   try {
-    const trust = await aGet('/admin/trust');
-    document.getElementById('trustTable').innerHTML = trust.map(t=>`
-      <tr>
-        <td style="font-weight:600">${t.customerName||'—'}</td>
-        <td>${t.phone}</td>
-        <td>
-          <span style="font-family:'Baloo 2',cursive;font-size:18px;font-weight:800;color:${t.score>=7?'var(--green)':t.score>=4?'var(--accent)':'var(--red)'}">${t.score}</span>
-          <span style="color:var(--accent);font-size:12px"> ${'⭐'.repeat(Math.min(5,Math.max(1,Math.round(t.score/2))))}</span>
-        </td>
-        <td>${t.totalBookings}</td>
-        <td><span class="badge badge-green">${t.completedBookings}</span></td>
-        <td><span class="badge badge-red">${t.noShows}</span></td>
-        <td><button class="action-btn ab-edit" onclick="resetTrust('${t._id}')">🔄 Reset</button></td>
-      </tr>`).join('') || '<tr><td colspan="7" class="empty-row">No data</td></tr>';
-  } catch(e){ toast('❌ Trust load failed'); }
+    await authPut(`/bookings/${id}/status`,{status});
+    toast('✅ Status updated!');
+    loadBookings();
+    loadDashboard();
+  } catch(e){ toast('❌ Update विफल'); }
 }
 
-async function resetTrust(id) {
-  if (!confirm('Reset trust score to 5?')) return;
-  await aPut(`/admin/trust/${id}/reset`,{});
-  toast('✅ Reset!'); loadTrust();
+// Products CRUD
+function openAddProduct() {
+  editingProduct = null;
+  document.getElementById('modalTitle').textContent = '➕ नया उत्पाद जोड़ें';
+  document.getElementById('pName').value='';
+  document.getElementById('pPrice').value='';
+  document.getElementById('pStock').value='';
+  document.getElementById('pUnit').value='kg';
+  document.getElementById('productModal').classList.add('open');
 }
 
-// ── NAVIGATION ──
-function showPage(pageId, title, el) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+function openEditProduct(p) {
+  editingProduct = p;
+  document.getElementById('modalTitle').textContent = '✏️ उत्पाद संपादित करें';
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pStock').value = p.stock;
+  document.getElementById('pUnit').value = p.unit;
+  document.getElementById('productModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('open');
+}
+
+async function saveProduct() {
+  const name=document.getElementById('pName').value.trim();
+  const price=document.getElementById('pPrice').value;
+  const stock=document.getElementById('pStock').value;
+  const unit=document.getElementById('pUnit').value;
+  if (!name||!price) return toast('⚠️ नाम और कीमत जरूरी है');
+  try {
+    if (editingProduct) {
+      await authPut(`/products/${editingProduct._id}`,{name,price:+price,stock:+stock,unit});
+      toast('✅ उत्पाद अपडेट हुआ!');
+    } else {
+      await authPost('/products',{name,price:+price,stock:+stock,unit});
+      toast('✅ उत्पाद जोड़ा गया!');
+    }
+    closeModal();
+    loadProducts();
+  } catch(e){ toast('❌ सेव विफल'); }
+}
+
+async function deleteProduct(id) {
+  if (!confirm('क्या आप यह उत्पाद हटाना चाहते हैं?')) return;
+  try {
+    await authDel(`/products/${id}`);
+    toast('🗑️ उत्पाद हटाया गया');
+    loadProducts();
+  } catch(e){ toast('❌ Delete विफल'); }
+}
+
+function switchScreen(id, title, el) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('pageTitle').textContent = title;
-  closeSidebar();
-  if (pageId==='pgDash') loadDashboard();
-  if (pageId==='pgLocations') loadLocations();
-  if (pageId==='pgShops') { loadLocations(); loadShops(); }
-  if (pageId==='pgSellers') { loadSellers(); loadShopsForFilters(); }
-  if (pageId==='pgBookings') loadBookings();
-  if (pageId==='pgTrust') loadTrust();
+  document.getElementById('topBarTitle').textContent = title;
+  document.getElementById('fabAdd').style.display = id==='screenProducts' && sellerData.shopId ? 'flex':'none';
+  if (id==='screenProducts') loadProducts();
+  if (id==='screenBookings') loadBookings();
+  if (id==='screenDash') loadDashboard();
 }
 
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('open');
+// HTTP helpers
+async function get(url) {
+  const r = await fetch(API+url); return r.json();
 }
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
+async function post(url,body) {
+  const r = await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  return r.json();
 }
-
-// ── HELPERS ──
-function statusBadge(s) {
-  const map={pending:'badge-yellow',ready:'badge-green',completed:'badge-blue',cancelled:'badge-red'};
-  const label={pending:'⏳ Pending',ready:'✅ Ready',completed:'🏆 Done',cancelled:'❌ Cancelled'};
-  return `<span class="badge ${map[s]||'badge-gray'}">${label[s]||s}</span>`;
+async function authGet(url) {
+  const r = await fetch(API+url,{headers:{Authorization:'Bearer '+token}}); return r.json();
 }
-function typeBadge(t) {
-  const map={city:'badge-blue',town:'badge-green',village:'badge-yellow'};
-  const label={city:'🏙️ City',town:'🏘️ Town',village:'🌾 Village'};
-  return `<span class="badge ${map[t]||'badge-gray'}">${label[t]||t}</span>`;
+async function authPost(url,body) {
+  const r = await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});
+  return r.json();
 }
-
-async function aGet(url){ const r=await fetch(API+url,{headers:{Authorization:'Bearer '+adminToken}}); return r.json(); }
-async function aPost(url,body){ const r=await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify(body)}); return r.json(); }
-async function aPut(url,body){ const r=await fetch(API+url,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify(body)}); return r.json(); }
-async function aDel(url){ const r=await fetch(API+url,{method:'DELETE',headers:{Authorization:'Bearer '+adminToken}}); return r.json(); }
-async function post(url,body){ const r=await fetch(API+url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); return r.json(); }
+async function authPut(url,body) {
+  const r = await fetch(API+url,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});
+  return r.json();
+}
+async function authDel(url) {
+  const r = await fetch(API+url,{method:'DELETE',headers:{Authorization:'Bearer '+token}}); return r.json();
+}
 
 function toast(msg) {
-  const t=document.getElementById('toast2');
+  const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3000);
 }
