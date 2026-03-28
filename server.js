@@ -34,7 +34,7 @@ app.use('/api/otp',       require('./routes/otp'));
 // SPA fallback
 app.get('/seller*', (req, res) => res.sendFile(path.join(__dirname, 'public/seller.html')));
 app.get('/admin*',  (req, res) => res.sendFile(path.join(__dirname, 'public/admin.html')));
-app.get('*',        (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public/home.html')));
 
 // Auto-cancel expired bookings every 60s
 const { autoCancelExpired } = require('./controllers/bookingController');
